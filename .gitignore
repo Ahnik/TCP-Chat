@@ -1,0 +1,44 @@
+# Compiled object files
+*.o
+*.obj
+
+# Compiled binary executables
+*.exe
+*.out
+*.a
+*.so
+*.dll
+*.dylib
+
+# Build directory
+/build/
+/bin/
+/lib/
+
+# CMake files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
+
+# Auto-generated dependency files
+*.d
+
+# Logs and debugging files
+*.log
+*.stackdump
+core
+
+# Editor backups and temporary files
+*~
+*.swp
+*.swo
+.DS_Store
+.vscode/
+.idea/
+*.bak
+
+# Test binaries (if not kept in version control)
+tests/*.out
+tests/*.exe
