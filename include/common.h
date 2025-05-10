@@ -1,9 +1,6 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <stdint.h>
-#include <stddef.h>
-
 // Constants
 #define MAX_USERNAME_LEN 12
 #define MAX_MSG_SIZE 1024
@@ -48,47 +45,5 @@ typedef enum{
     STATUS_INFO_SERVER_SHUTDOWN,
     STATUS_COUNT
 } ResponseStatus;
-
-// Request structure
-typedef struct{
-    RequestType type;
-    char username[MAX_USERNAME_LEN];
-    char message[MAX_MSG_SIZE]; 
-} Request;
-
-// Response structure
-typedef struct{
-    ResponseType type;
-    ResponseStatus status;
-    char message[MAX_MSG_SIZE + MAX_USERNAME_LEN + 1];
-} Response;
-
-// Functions to map strings to the corresponding enums 
-RequestType parse_request_type(const char *type_str);
-ResponseType parse_response_type(const char *type_str);
-ResponseStatus parse_response_status(const char *status_str);
-
-// Functions to map the enums to corresponding strings
-const char *request_type_to_string(RequestType type);
-const char *response_type_to_string(ResponseType type);
-const char *response_status_to_string(ResponseStatus status);
-
-// Function to read the first 4 bytes of the request and interpret it as the request length
-uint32_t read_request_len(const uint8_t *buffer);
-
-// Function to write the request length into a request buffer
-void write_request_len(uint8_t *buffer, uint32_t len);
-
-// Functions to receive and send entire messages using TCP sockets
-int recv_all(int sock_fd, void *buffer, size_t length);
-int send_all(int sock_fd, const void *buffer, size_t length);
-
-// Functions to encode and decode the request messages
-int encode_request(const RequestType *type, uint8_t **buffer, uint32_t *out_len);
-int decode_request(const uint8_t *data, uint32_t length, RequestType *type);
-
-// Functions to encode and decode the response messages
-int encode_response(const ResponseType *type, const ResponseStatus *status, uint8_t **buffer);
-int decode_response(const uint8_t *data, ResponseStatus *status, ResponseType *type);
 
 #endif
