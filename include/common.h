@@ -1,6 +1,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <errno.h>
+
 // Constants
 #define MAX_USERNAME_LEN 12
 #define MAX_MSG_SIZE 1024
@@ -45,5 +47,9 @@ typedef enum{
     STATUS_INFO_SERVER_SHUTDOWN,
     STATUS_COUNT
 } ResponseStatus;
+
+// Function for handling errors
+// It displays the error encountered and then kills the process
+void exit_with_error(const char *fmt, ...);
 
 #endif
