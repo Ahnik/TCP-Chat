@@ -1,5 +1,6 @@
 #include "common.h"
 #include <stdarg.h>
+#include <errno.h>
 #include <stdio.h>
 
 void exit_with_error(const char *fmt, ...){

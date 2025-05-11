@@ -1,8 +1,6 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <errno.h>
-
 // Constants
 #define MAX_USERNAME_LEN 12
 #define MAX_MSG_SIZE 1024
