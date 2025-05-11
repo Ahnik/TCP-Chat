@@ -47,17 +47,17 @@ The types of responses supported are:<br>
 <h2>Joining the Chat</h2>
 <p>
 When a new user joins the chat(a new client connects to the server), they first post a username. It must be unique:<br>
-[0][JOIN|Alice\r\n]<br>
+[10][JOIN|Alice]<br>
 </p>
 
 <h2>Sending Messages</h2>
 <p>
 Once the user has joined the chat, they can send messages:<br>
-[12][MSG|Alice|Hello there!\r\n]<br>
+[22][MSG|Alice|Hello there!]<br>
 </p>
 
 <h2>Printing the Messages</h2>
 <p>
 Once the server receives the messages, it sends them back to all the connected clients:<br>
-INFO|MESSAGE|Alice: Hello there!\r\n<br>
+[31][INFO|MESSAGE|Alice:Hello there!]<br>
 </p>

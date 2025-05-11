@@ -12,7 +12,7 @@ uint32_t read_request_len(int sockfd){
     while(bytesWritten < bytesRequired){
         size_t bytesReceived = recv(sockfd, len_buf + bytesWritten, bytesRequired - bytesWritten, 0);
         if(bytesReceived <= 0) 
-            exit_with_error("Error while trying to receive request length\n");
+            exit_with_error("Error while trying to receive request length");
         bytesWritten += bytesReceived;
     }
     uint32_t length = ntohl(*len_buf);
