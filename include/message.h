@@ -2,6 +2,7 @@
 #define MESSAGE_H
 
 #include "common.h"
+#include "protocol.h"
 #include <stdint.h>
 
 // Request structure
@@ -17,16 +18,6 @@ typedef struct{
     ResponseStatus status;
     char message[MAX_MSG_SIZE + MAX_USERNAME_LEN + 1];
 } Response;
-
-// Functions to map strings to the corresponding enums 
-RequestType parse_request_type(const char *type_str);
-ResponseType parse_response_type(const char *type_str);
-ResponseStatus parse_response_status(const char *status_str);
-
-// Functions to map the enums to corresponding strings
-const char *request_type_to_string(RequestType type);
-const char *response_type_to_string(ResponseType type);
-const char *response_status_to_string(ResponseStatus status);
 
 // Functions to encode and decode the request messages
 int encode_request(const RequestType *type, uint8_t **buffer, uint32_t *out_len);

@@ -6,13 +6,13 @@
 uint32_t read_payload_len(int sockfd){
     uint32_t *len_buf = (uint32_t *)calloc(1, sizeof(*len_buf));
     if(!len_buf)
-        exit_with_error("Memory allocation error");
+        return 0;
     size_t bytesWritten = 0;
     size_t bytesRequired = sizeof(uint32_t);
     while(bytesWritten < bytesRequired){
         size_t bytesReceived = recv(sockfd, len_buf + bytesWritten, bytesRequired - bytesWritten, 0);
         if(bytesReceived <= 0) 
-            exit_with_error("Error while trying to receive request length");
+            return 0;
         bytesWritten += bytesReceived;
     }
     uint32_t length = ntohl(*len_buf);
