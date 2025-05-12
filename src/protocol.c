@@ -23,7 +23,6 @@ static const struct StatusEntry status_table[] = {
     {"SERVER_SHUTDOWN", STATUS_INFO_SERVER_SHUTDOWN}
 };
 
-
 RequestType parse_request_type(const char *type_str){
     if(strcmp(type_str, "MSG") == 0)
         return REQUEST_MSG;
@@ -53,7 +52,6 @@ ResponseStatus parse_response_status(const char *status_str){
         if(strcmp(status_str, status_table[i].str) == 0)
             return status_table[i].status;
     }
-
     return STATUS_COUNT;
 }
 
@@ -90,6 +88,5 @@ const char *response_status_to_string(ResponseStatus status){
         if(status == status_table[i].status)
             return status_table[i].str;
     }
-
     return NULL;
 }
