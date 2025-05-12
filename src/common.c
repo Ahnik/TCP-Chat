@@ -2,6 +2,8 @@
 #include <stdarg.h>
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void exit_with_error(const char *fmt, ...){
     int errno_save = errno;
