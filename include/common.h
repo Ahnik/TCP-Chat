@@ -3,7 +3,7 @@
 
 // Constants
 #define MAX_USERNAME_LEN 12
-#define MAX_MSG_SIZE 1024
+#define MAX_PAYLOAD_SIZE 1024
 #define HEADER_SIZE 4
 
 // Function for handling errors

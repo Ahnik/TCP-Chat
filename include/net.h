@@ -1,7 +1,6 @@
 #ifndef NET_H
 #define NET_H
 
-#include <stddef.h>
 #include <stdint.h>
 
 // Function to read the first 4 bytes of an incoming message from the socket and interpret it as the length of the payload

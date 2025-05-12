@@ -9,14 +9,14 @@
 typedef struct{
     RequestType type;
     char username[MAX_USERNAME_LEN];
-    char message[MAX_MSG_SIZE]; 
+    char message[MAX_PAYLOAD_SIZE]; 
 } Request;
 
 // Response structure
 typedef struct{
     ResponseType type;
     ResponseStatus status;
-    char message[MAX_MSG_SIZE + MAX_USERNAME_LEN + 1];
+    char message[MAX_PAYLOAD_SIZE + MAX_USERNAME_LEN + 1];
 } Response;
 
 // Functions to encode and decode the request messages

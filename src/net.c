@@ -8,9 +8,8 @@ uint32_t read_payload_len(int sockfd){
     if(!len_buf)
         return 0;
     size_t bytesWritten = 0;
-    size_t bytesRequired = sizeof(uint32_t);
-    while(bytesWritten < bytesRequired){
-        size_t bytesReceived = recv(sockfd, len_buf + bytesWritten, bytesRequired - bytesWritten, 0);
+    while(bytesWritten < HEADER_SIZE){
+        size_t bytesReceived = recv(sockfd, len_buf + bytesWritten, HEADER_SIZE - bytesWritten, 0);
         if(bytesReceived <= 0) 
             return 0;
         bytesWritten += bytesReceived;
