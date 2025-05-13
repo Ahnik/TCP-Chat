@@ -2,13 +2,9 @@
 #include "protocol.h"
 #include <string.h>
 
-void setUp(void){
+void setUp(void){}
 
-}
-
-void tearDown(void){
-    
-}
+void tearDown(void){}
 
 // Creating a lookup table of status codes and their corresponding strings 
 struct StatusEntry{

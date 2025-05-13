@@ -16,11 +16,11 @@ typedef struct{
 typedef struct{
     ResponseType type;
     ResponseStatus status;
-    char message[MAX_PAYLOAD_SIZE + MAX_USERNAME_LEN + 1];
+    char message[MAX_PAYLOAD_SIZE];
 } Response;
 
 // Functions to encode and decode the request messages
-int encode_request(const RequestType *type, uint8_t **buffer, uint32_t *out_len);
+int encode_request(uint8_t **buffer,size_t buffer_capacity, uint32_t length, const Request *request);
 int decode_request(const uint8_t *data, uint32_t length, RequestType *type);
 
 // Functions to encode and decode the response messages
