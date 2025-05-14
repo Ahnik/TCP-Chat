@@ -9,22 +9,26 @@
 typedef struct{
     RequestType type;
     char username[MAX_USERNAME_LEN];
-    char message[MAX_PAYLOAD_SIZE]; 
+    char message[MAX_MESSAGE_SIZE]; 
 } Request;
 
 // Response structure
 typedef struct{
     ResponseType type;
     ResponseStatus status;
-    char message[MAX_PAYLOAD_SIZE];
+    char message[MAX_MESSAGE_SIZE];
 } Response;
 
-// Functions to encode and decode the request messages
-int encode_request(uint8_t **buffer,size_t buffer_capacity, uint32_t length, const Request *request);
-int decode_request(const uint8_t *data, uint32_t length, RequestType *type);
+// Function encodes the request according to the protocol into the given buffer
+int encode_request(uint8_t **buffer, size_t buffer_capacity, uint32_t length, const Request *request);
 
-// Functions to encode and decode the response messages
-int encode_response(const ResponseType *type, const ResponseStatus *status, uint8_t **buffer);
-int decode_response(const uint8_t *data, ResponseStatus *status, ResponseType *type);
+// Function decodes the request the payload to fill up the request struct
+int decode_request(Request *request, const char *payload);
+
+// Function encodes the response according to the protocol into the given buffer
+int encode_response(uint8_t **buffer, size_t buffer_capacity, uint32_t length, const Response *response);
+
+// Function decodes the response the payload to fill up the response struct
+int decode_response(Response *response, const char *payload);
 
 #endif
