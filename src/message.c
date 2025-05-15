@@ -29,13 +29,15 @@ int encode_request(uint8_t **buffer, size_t buffer_capacity, uint32_t length, co
     pointer += strlen(request->username);
     buffer_capacity -= strlen(request->username);
 
-    if(buffer_capacity <= 1) return ERR_BUFFER_SIZE_EXCEEDED;
-    pointer = memset(pointer, '|', 1);
-    pointer++;
-    buffer_capacity--;
+    if((request->type == REQUEST_MSG) || (request->type == REQUEST_NAME)){
+        if(buffer_capacity <= 1) return ERR_BUFFER_SIZE_EXCEEDED;
+        pointer = memset(pointer, '|', 1);
+        pointer++;
+        buffer_capacity--;
 
-    if(buffer_capacity < strlen(request->message)) return ERR_BUFFER_SIZE_EXCEEDED;
-    pointer = memcpy(pointer, request->message, strlen(request->message));
+        if(buffer_capacity < strlen(request->message)) return ERR_BUFFER_SIZE_EXCEEDED;
+        pointer = memcpy(pointer, request->message, strlen(request->message));
+    }
     return ERR_OK;
 }
 
@@ -107,13 +109,15 @@ int encode_response(uint8_t **buffer, size_t buffer_capacity, uint32_t length, c
     pointer += strlen(status_str);
     buffer_capacity -= strlen(status_str);
 
-    if(buffer_capacity <= 1) return ERR_BUFFER_SIZE_EXCEEDED;
-    pointer = memset(pointer, '|', 1);
-    pointer++;
-    buffer_capacity--;
+    if(response->type == RESPONSE_INFO){
+        if(buffer_capacity <= 1) return ERR_BUFFER_SIZE_EXCEEDED;
+        pointer = memset(pointer, '|', 1);
+        pointer++;
+        buffer_capacity--;
 
-    if(buffer_capacity < strlen(response->message)) return ERR_BUFFER_SIZE_EXCEEDED;
-    pointer = memcpy(pointer, response->message, strlen(response->message));
+        if(buffer_capacity < strlen(response->message)) return ERR_BUFFER_SIZE_EXCEEDED;
+        pointer = memcpy(pointer, response->message, strlen(response->message));
+    }
     return ERR_OK;
 }
 

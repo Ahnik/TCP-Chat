@@ -1,10 +1,43 @@
 #include "unity.h"
 #include "message.h"
 #include "error.h"
+#include <stdlib.h>
 
 void setUp(void){}
 
 void tearDown(void){}
+
+void test_encode_request(void){
+    Request request = {REQUEST_MSG, "Alice", "Hello there!"};
+    uint32_t length = 22;
+    size_t buffer_capacity = length + sizeof(length) + 1;
+    uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
+    
+    TEST_ASSERT_EQUAL(ERR_OK, encode_request(&buffer, buffer_capacity, length, &request));
+    buffer[buffer_capacity-1] = '\0';
+    char *payload = (char *)(buffer + sizeof(length));
+    TEST_ASSERT_EQUAL_STRING("MSG|Alice|Hello there!", payload);
+    free(buffer);
+
+    request.type = REQUEST_JOIN;
+    length = 10;
+    buffer_capacity = length + sizeof(length) + 1;
+    uint8_t *new_buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*new_buffer));
+
+    TEST_ASSERT_EQUAL(ERR_OK, encode_request(&new_buffer, buffer_capacity, length, &request));
+    new_buffer[buffer_capacity-1] = '\0';
+    payload = (char *)(new_buffer + sizeof(length));
+    TEST_ASSERT_EQUAL_STRING("JOIN|Alice", payload);
+    free(new_buffer);
+
+    request.type = REQUEST_MSG;
+    length = 22;
+    buffer_capacity = length;
+    uint8_t *newer_buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*newer_buffer));
+
+    TEST_ASSERT_EQUAL(ERR_BUFFER_SIZE_EXCEEDED, encode_request(&newer_buffer, buffer_capacity, length, &request));
+    free(newer_buffer);
+}
 
 void test_decode_request(void){
     Request request;
@@ -44,6 +77,36 @@ void test_decode_request(void){
     TEST_ASSERT_EQUAL(ERR_INVALID, decode_request(&request, payload));
 }
 
+void test_encode_response(void){
+    Response response = {RESPONSE_INFO, STATUS_INFO_MESSAGE, "Alice:Hello there!"};
+    uint32_t length = 31;
+    uint32_t buffer_capacity = length + sizeof(length) + 1;
+    uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
+    TEST_ASSERT_EQUAL(ERR_OK, encode_response(&buffer, buffer_capacity, length, &response));
+    buffer[buffer_capacity-1] = '\0';
+    char *payload = (char *)(buffer + sizeof(length));
+    TEST_ASSERT_EQUAL_STRING("INFO|MESSAGE|Alice:Hello there!", payload);
+    free(buffer);
+    
+    response.type = RESPONSE_ERR;
+    response.status = STATUS_ERR_NAME_MISSING;
+    length = 16;
+    buffer_capacity = length + sizeof(length) + 1;
+    uint8_t *new_buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*new_buffer));
+    TEST_ASSERT_EQUAL(ERR_OK, encode_response(&new_buffer, buffer_capacity, length, &response));
+    payload = (char *)(new_buffer + sizeof(length));
+    TEST_ASSERT_EQUAL_STRING("ERR|NAME_MISSING", payload);
+    free(new_buffer);
+
+    response.type = RESPONSE_INFO;
+    response.status = STATUS_INFO_MESSAGE;
+    length = 31;
+    buffer_capacity = 31;
+    uint8_t *newer_buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*newer_buffer));
+    TEST_ASSERT_EQUAL(ERR_BUFFER_SIZE_EXCEEDED, encode_response(&newer_buffer, buffer_capacity, length, &response));
+    free(newer_buffer);
+}
+
 void test_decode_response(void){
     Response response;
     char *payload = "INFO|MESSAGE|Alice:Hello there!";
@@ -81,7 +144,9 @@ void test_decode_response(void){
 
 int main(void){
     UNITY_BEGIN();
+    RUN_TEST(test_encode_request);
     RUN_TEST(test_decode_request);
+    RUN_TEST(test_encode_response);
     RUN_TEST(test_decode_response);
     return UNITY_END();
 }
