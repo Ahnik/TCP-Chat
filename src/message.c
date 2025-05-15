@@ -7,7 +7,7 @@
 
 int encode_request(uint8_t **buffer, size_t buffer_capacity, uint32_t length, const Request *request){
     uint32_t net_length = htonl(length);
-    char *type_str = request_type_to_string(request->type);
+    const char *type_str = request_type_to_string(request->type);
 
     if(buffer_capacity <= sizeof(net_length)) return ERR_BUFFER_SIZE_EXCEEDED;
     uint8_t *pointer = memcpy(*buffer, &net_length, sizeof(net_length));
@@ -44,30 +44,48 @@ int decode_request(Request *request, const char *payload){
     if(!payload_duplicate) return ERR_MEMORY;
 
     char *payload_token = strtok(payload_duplicate, "|");
-    if(!payload_token) return ERR_INVALID;
+    if(!payload_token){
+        free(payload_duplicate);
+        return ERR_INVALID;
+    }
     request->type = parse_request_type(payload_token);
-    if(request->type == REQUEST_COUNT) return ERR_INVALID;
+    if(request->type == REQUEST_COUNT){
+        free(payload_duplicate);
+        return ERR_INVALID;
+    }
 
     payload_token = strtok(NULL, "|");
-    if(!payload_token) return ERR_INVALID;
-    if(strlen(payload_token) > MAX_USERNAME_LEN) return ERR_BUFFER_SIZE_EXCEEDED;
+    if(!payload_token){
+        free(payload_duplicate);
+        return ERR_INVALID;
+    }
+    if(strlen(payload_token) > MAX_USERNAME_LEN){
+        free(payload_duplicate);
+        return ERR_BUFFER_SIZE_EXCEEDED;
+    }
     strcpy(request->username, payload_token);
 
     if((request->type == REQUEST_MSG) || (request->type == REQUEST_NAME)){
         payload_token = strtok(NULL, "|");
-        if(!payload_token) return ERR_INVALID;
-        if(strlen(payload_token) > MAX_MESSAGE_SIZE) return ERR_BUFFER_SIZE_EXCEEDED;
+        if(!payload_token){
+            free(payload_duplicate);
+            return ERR_INVALID;
+        }
+        if(strlen(payload_token) > MAX_MESSAGE_SIZE){
+            free(payload_duplicate);
+            return ERR_BUFFER_SIZE_EXCEEDED;
+        }
         strcpy(request->message, payload_token);
-        free(payload_duplicate);
     }
 
+    free(payload_duplicate);
     return ERR_OK;
 }
 
 int encode_response(uint8_t **buffer, size_t buffer_capacity, uint32_t length, const Response *response){
     uint32_t net_length = htonl(length);
-    char *type_str = response_type_to_string(response->type);
-    char *status_str = response_status_to_string(response->status);
+    const char *type_str = response_type_to_string(response->type);
+    const char *status_str = response_status_to_string(response->status);
 
     if(buffer_capacity <= sizeof(net_length)) return ERR_BUFFER_SIZE_EXCEEDED;
     uint8_t *pointer = memcpy(*buffer, &net_length, sizeof(net_length));
@@ -104,21 +122,40 @@ int decode_response(Response *response, const char *payload){
     if(!payload_duplicate) return ERR_MEMORY;
 
     char *payload_token = strtok(payload_duplicate, "|");
-    if(!payload_token) return ERR_INVALID;
+    if(!payload_token){
+        free(payload_duplicate);
+        return ERR_INVALID;
+    }
     response->type = parse_response_type(payload_token);
-    if(response->type == RESPONSE_COUNT) return ERR_INVALID;
+    if(response->type == RESPONSE_COUNT){
+        free(payload_duplicate);
+        return ERR_INVALID;
+    }
 
     payload_token = strtok(NULL, "|");
-    if(!payload_token) return ERR_INVALID;
+    if(!payload_token){
+        free(payload_duplicate);
+        return ERR_INVALID;
+    }
     response->status = parse_response_status(payload_token);
-    if(response->status == STATUS_COUNT) return ERR_INVALID;
+    if(response->status == STATUS_COUNT){
+        free(payload_duplicate);
+        return ERR_INVALID;
+    }
 
     if(response->type == RESPONSE_INFO){
         payload_token = strtok(NULL, "|");
-        if(!payload_token) return ERR_INVALID;
-        if(strlen(payload_token) > MAX_MESSAGE_SIZE) return ERR_BUFFER_SIZE_EXCEEDED;
+        if(!payload_token){
+            free(payload_duplicate);
+            return ERR_INVALID;
+        }
+        if(strlen(payload_token) > MAX_MESSAGE_SIZE){
+            free(payload_duplicate);
+            return ERR_INVALID;
+        }
         strcpy(response->message, payload_token);
     }
 
+    free(payload_duplicate);
     return ERR_OK;
 }

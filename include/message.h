@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "protocol.h"
+#include <stddef.h>
 #include <stdint.h>
 
 // Request structure
