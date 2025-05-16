@@ -20,6 +20,7 @@ static const struct StatusEntry status_table[] = {
     {"USER_JOINED"    , STATUS_INFO_USER_JOINED},
     {"USER_LEFT"      , STATUS_INFO_USER_LEFT},
     {"MESSAGE"        , STATUS_INFO_MESSAGE},
+    {"NAME_CHANGED"   , STATUS_INFO_NAME_CHANGED},
     {"SERVER_SHUTDOWN", STATUS_INFO_SERVER_SHUTDOWN}
 };
 
