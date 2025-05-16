@@ -4,11 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-void setUp(void){}
+void setUp(){}
 
-void tearDown(void){}
+void tearDown(){}
 
-void test_encode_request_msg(void){
+void test_encode_request_msg(){
     Request request = {REQUEST_MSG, "Alice", "Hello there!"};
     uint32_t length = 22;
     size_t buffer_capacity = length + sizeof(length) + 1;
@@ -21,7 +21,7 @@ void test_encode_request_msg(void){
     free(buffer);
 }
 
-void test_encode_request_join(void){
+void test_encode_request_join(){
     Request request = {REQUEST_JOIN, "Alice", ""};
     uint32_t length = 10;
     size_t buffer_capacity = length + sizeof(length) + 1;
@@ -34,7 +34,7 @@ void test_encode_request_join(void){
     free(buffer);
 }
 
-void test_encode_request_leave(void){
+void test_encode_request_leave(){
     Request request = {REQUEST_LEAVE, "Alice", ""};
     uint32_t length = 11;
     size_t buffer_capacity = length + sizeof(length) + 1;
@@ -47,7 +47,7 @@ void test_encode_request_leave(void){
     free(buffer);
 }
 
-void test_encode_request_name(void){
+void test_encode_request_name(){
     Request request = {REQUEST_NAME, "Alice", "Bob"};
     uint32_t length = 14;
     size_t buffer_capacity = length + sizeof(length) + 1;
@@ -60,7 +60,7 @@ void test_encode_request_name(void){
     free(buffer);
 }
 
-void test_encode_request_invalid(void){
+void test_encode_request_invalid(){
     Request request = {REQUEST_NAME, "Alice", "Bob"};
     uint32_t length = 14;
     size_t buffer_capacity = 14;
@@ -70,7 +70,7 @@ void test_encode_request_invalid(void){
     free(buffer);
 }
 
-void test_decode_request_msg(void){
+void test_decode_request_msg(){
     Request request;
     char *payload = "MSG|Alice|Hello there!";
     TEST_ASSERT_EQUAL(ERR_OK, decode_request(&request, payload));
@@ -79,7 +79,7 @@ void test_decode_request_msg(void){
     TEST_ASSERT_EQUAL_STRING("Hello there!", request.message);
 }
 
-void test_decode_request_join(void){
+void test_decode_request_join(){
     Request request;
     char *payload = "JOIN|Alice";
     TEST_ASSERT_EQUAL(ERR_OK, decode_request(&request, payload));
@@ -87,7 +87,7 @@ void test_decode_request_join(void){
     TEST_ASSERT_EQUAL_STRING("Alice", request.username);
 }
 
-void test_decode_request_leave(void){
+void test_decode_request_leave(){
     Request request;
     char *payload = "LEAVE|Alice";
     TEST_ASSERT_EQUAL(ERR_OK, decode_request(&request, payload));
@@ -95,7 +95,7 @@ void test_decode_request_leave(void){
     TEST_ASSERT_EQUAL_STRING("Alice", request.username);
 }
 
-void test_decode_request_name(void){
+void test_decode_request_name(){
     Request request;
     char *payload = "NAME|Alice|Bob";
     TEST_ASSERT_EQUAL(ERR_OK, decode_request(&request, payload));
@@ -104,7 +104,7 @@ void test_decode_request_name(void){
     TEST_ASSERT_EQUAL_STRING("Bob", request.message);
 }
 
-void test_decode_request_invalid(void){
+void test_decode_request_invalid(){
     Request request;
     char *payload = "INVALID|Alice";
     TEST_ASSERT_EQUAL(ERR_INVALID, decode_request(&request, payload));
@@ -122,7 +122,7 @@ void test_decode_request_invalid(void){
     TEST_ASSERT_EQUAL(ERR_INVALID, decode_request(&request, payload));
 }
 
-void test_encode_response_ack(void){
+void test_encode_response_ack(){
     Response response = {RESPONSE_ACK, STATUS_ACK_OK, ""};
     uint32_t length = strlen("ACK|OK");
     uint32_t buffer_capacity = length + sizeof(length) + 1;
@@ -134,7 +134,7 @@ void test_encode_response_ack(void){
     free(buffer);
 }
 
-void test_encode_response_err(void){
+void test_encode_response_err(){
     Response response = {RESPONSE_ERR, STATUS_ERR_INVALID_CMD, ""};
     uint32_t length = strlen("ERR|INVALID_CMD");
     uint32_t buffer_capacity = length + sizeof(length) + 1;
@@ -146,7 +146,7 @@ void test_encode_response_err(void){
     free(buffer);    
 }
 
-void test_encode_response_info(void){
+void test_encode_response_info(){
     Response response = {RESPONSE_INFO, STATUS_INFO_MESSAGE, "Alice:Hello there!"};
     uint32_t length = 31;
     uint32_t buffer_capacity = length + sizeof(length) + 1;
@@ -158,7 +158,7 @@ void test_encode_response_info(void){
     free(buffer);
 }
 
-void test_encode_response_invalid(void){
+void test_encode_response_invalid(){
     Response response = {RESPONSE_INFO, STATUS_INFO_MESSAGE, "Alice:Hi"};
     uint32_t length = 31;
     uint32_t buffer_capacity = 17;
@@ -167,7 +167,7 @@ void test_encode_response_invalid(void){
     free(buffer);
 }
 
-void test_decode_response_ack(void){
+void test_decode_response_ack(){
     Response response;
     char *payload = "ACK|QUIT";
     TEST_ASSERT_EQUAL(ERR_OK, decode_response(&response, payload));
@@ -175,7 +175,7 @@ void test_decode_response_ack(void){
     TEST_ASSERT_EQUAL(STATUS_ACK_QUIT, response.status);
 }
 
-void test_decode_response_err(void){
+void test_decode_response_err(){
     Response response;
     char *payload = "ERR|NAME_TAKEN";
     TEST_ASSERT_EQUAL(ERR_OK, decode_response(&response, payload));
@@ -183,7 +183,7 @@ void test_decode_response_err(void){
     TEST_ASSERT_EQUAL(STATUS_ERR_NAME_TAKEN, response.status);
 }
 
-void test_decode_response_info(void){
+void test_decode_response_info(){
     Response response;
     char *payload = "INFO|NAME_CHANGED|Alice has changed name to Bob";
     TEST_ASSERT_EQUAL(ERR_OK, decode_response(&response, payload));
@@ -192,7 +192,7 @@ void test_decode_response_info(void){
     TEST_ASSERT_EQUAL_STRING("Alice has changed name to Bob", response.message);
 }
 
-void test_decode_response_invalid(void){
+void test_decode_response_invalid(){
     Response response;
     char *payload = "INFO|MESSAGE|";
     TEST_ASSERT_EQUAL(ERR_INVALID, decode_response(&response, payload));

@@ -18,11 +18,6 @@ uint32_t read_payload_len(int sockfd){
     return length;
 }
 
-void write_payload_len(uint8_t *buffer, uint32_t len){
-    uint32_t net_len = htonl(len);
-    memcpy(buffer, &net_len, sizeof(uint32_t));
-}
-
 int recv_all(int sockfd, uint8_t *buffer, uint32_t length){
     uint32_t bytesWritten = 0;
     while(bytesWritten < length){
