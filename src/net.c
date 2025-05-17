@@ -3,8 +3,10 @@
 #include "error.h"
 #include <arpa/inet.h>
 #include <string.h>
+#include <stdlib.h>
 
 uint32_t read_payload_len(int sockfd){
+    if(sockfd < 0) return ERR_INVALID;
     uint32_t *len_buf = (uint32_t *)calloc(1, sizeof(*len_buf));
     if(!len_buf) return ERR_MEMORY;
     size_t bytesWritten = 0;
@@ -19,6 +21,9 @@ uint32_t read_payload_len(int sockfd){
 }
 
 int recv_all(int sockfd, uint8_t *buffer, uint32_t length){
+    if(sockfd < 0) return ERR_INVALID;
+    if(!buffer) return ERR_INVALID;
+    if(length == 0) return ERR_INVALID;
     uint32_t bytesWritten = 0;
     while(bytesWritten < length){
         uint32_t bytesReceived = recv(sockfd, buffer + bytesWritten, length - bytesWritten, 0);
@@ -29,6 +34,9 @@ int recv_all(int sockfd, uint8_t *buffer, uint32_t length){
 }
 
 int send_all(int sockfd, const uint8_t *buffer, uint32_t length){
+    if(sockfd < 0) return ERR_INVALID;
+    if(!buffer) return ERR_INVALID;
+    if(length == 0) return ERR_INVALID;
     uint32_t total_bytes = 0;
     while(total_bytes < length){
         uint32_t bytesSent = send(sockfd, buffer + total_bytes, length - total_bytes, 0);

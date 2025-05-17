@@ -13,6 +13,7 @@ void test_encode_request_msg(){
     uint32_t length = 22;
     size_t buffer_capacity = length + sizeof(length) + 1;
     uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
+    if(!buffer) TEST_ABORT();
     
     TEST_ASSERT_EQUAL(ERR_OK, encode_request(&buffer, buffer_capacity, length, &request));
     buffer[buffer_capacity-1] = '\0';
@@ -26,6 +27,7 @@ void test_encode_request_join(){
     uint32_t length = 10;
     size_t buffer_capacity = length + sizeof(length) + 1;
     uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
+    if(!buffer) TEST_ABORT();
 
     TEST_ASSERT_EQUAL(ERR_OK, encode_request(&buffer, buffer_capacity, length, &request));
     buffer[buffer_capacity-1] = '\0';
@@ -39,6 +41,7 @@ void test_encode_request_leave(){
     uint32_t length = 11;
     size_t buffer_capacity = length + sizeof(length) + 1;
     uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
+    if(!buffer) TEST_ABORT();
 
     TEST_ASSERT_EQUAL(ERR_OK, encode_request(&buffer, buffer_capacity, length, &request));
     buffer[buffer_capacity-1] = '\0';
@@ -52,6 +55,7 @@ void test_encode_request_name(){
     uint32_t length = 14;
     size_t buffer_capacity = length + sizeof(length) + 1;
     uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
+    if(!buffer) TEST_ABORT();
 
     TEST_ASSERT_EQUAL(ERR_OK, encode_request(&buffer, buffer_capacity, length, &request));
     buffer[buffer_capacity-1] = '\0';
@@ -65,6 +69,7 @@ void test_encode_request_invalid(){
     uint32_t length = 14;
     size_t buffer_capacity = 14;
     uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
+    if(!buffer) TEST_ABORT();
 
     TEST_ASSERT_EQUAL(ERR_BUFFER_SIZE_EXCEEDED, encode_request(&buffer, buffer_capacity, length, &request));
     free(buffer);
@@ -127,6 +132,8 @@ void test_encode_response_ack(){
     uint32_t length = strlen("ACK|OK");
     uint32_t buffer_capacity = length + sizeof(length) + 1;
     uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
+    if(!buffer) TEST_ABORT();
+
     TEST_ASSERT_EQUAL(ERR_OK, encode_response(&buffer, buffer_capacity, length, &response));
     buffer[buffer_capacity-1] = '\0';
     char *payload = (char *)(buffer + sizeof(length));
@@ -139,6 +146,8 @@ void test_encode_response_err(){
     uint32_t length = strlen("ERR|INVALID_CMD");
     uint32_t buffer_capacity = length + sizeof(length) + 1;
     uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
+    if(!buffer) TEST_ABORT();
+
     TEST_ASSERT_EQUAL(ERR_OK, encode_response(&buffer, buffer_capacity, length, &response));
     buffer[buffer_capacity-1] = '\0';
     char *payload = (char *)(buffer + sizeof(length));
@@ -151,6 +160,8 @@ void test_encode_response_info(){
     uint32_t length = 31;
     uint32_t buffer_capacity = length + sizeof(length) + 1;
     uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
+    if(!buffer) TEST_ABORT();
+
     TEST_ASSERT_EQUAL(ERR_OK, encode_response(&buffer, buffer_capacity, length, &response));
     buffer[buffer_capacity-1] = '\0';
     char *payload = (char *)(buffer + sizeof(length));
@@ -163,6 +174,8 @@ void test_encode_response_invalid(){
     uint32_t length = 31;
     uint32_t buffer_capacity = 17;
     uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
+    if(!buffer) TEST_ABORT();
+
     TEST_ASSERT_EQUAL(ERR_BUFFER_SIZE_EXCEEDED, encode_response(&buffer, buffer_capacity, length, &response));
     free(buffer);
 }
@@ -208,7 +221,7 @@ void test_decode_response_invalid(){
 
 }
 
-int main(void){
+int main(){
     UNITY_BEGIN();
     RUN_TEST(test_encode_request_msg);
     RUN_TEST(test_encode_request_join);

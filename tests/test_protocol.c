@@ -2,9 +2,9 @@
 #include "protocol.h"
 #include <string.h>
 
-void setUp(void){}
+void setUp(){}
 
-void tearDown(void){}
+void tearDown(){}
 
 // Creating a lookup table of status codes and their corresponding strings 
 struct StatusEntry{
@@ -28,7 +28,7 @@ static const struct StatusEntry status_table[] = {
     {"SERVER_SHUTDOWN", STATUS_INFO_SERVER_SHUTDOWN}
 };
 
-void test_parse_request_type(void){
+void test_parse_request_type(){
     TEST_ASSERT_EQUAL(REQUEST_MSG   , parse_request_type("MSG"));
     TEST_ASSERT_EQUAL(REQUEST_JOIN  , parse_request_type("JOIN"));
     TEST_ASSERT_EQUAL(REQUEST_LEAVE , parse_request_type("LEAVE")); 
@@ -36,39 +36,39 @@ void test_parse_request_type(void){
     TEST_ASSERT_EQUAL(REQUEST_COUNT , parse_request_type("INVALID"));
 }
 
-void test_parse_response_type(void){
+void test_parse_response_type(){
     TEST_ASSERT_EQUAL(RESPONSE_ACK  , parse_response_type("ACK"));
     TEST_ASSERT_EQUAL(RESPONSE_ERR  , parse_response_type("ERR"));
     TEST_ASSERT_EQUAL(RESPONSE_INFO , parse_response_type("INFO"));
     TEST_ASSERT_EQUAL(RESPONSE_COUNT, parse_response_type("INVALID"));
 }
 
-void test_parse_response_status(void){
+void test_parse_response_status(){
     for(size_t i=0; i<sizeof(status_table)/sizeof(status_table[0]); i++){
         TEST_ASSERT_EQUAL(status_table[i].status, parse_response_status(status_table[i].str));
     }
 }
 
-void test_request_type_to_string(void){
+void test_request_type_to_string(){
     TEST_ASSERT_EQUAL_STRING("MSG"  , request_type_to_string(REQUEST_MSG));
     TEST_ASSERT_EQUAL_STRING("JOIN" , request_type_to_string(REQUEST_JOIN));
     TEST_ASSERT_EQUAL_STRING("LEAVE", request_type_to_string(REQUEST_LEAVE));
     TEST_ASSERT_EQUAL_STRING("NAME" , request_type_to_string(REQUEST_NAME));
 }
 
-void test_response_type_to_string(void){
+void test_response_type_to_string(){
     TEST_ASSERT_EQUAL_STRING("ACK" , response_type_to_string(RESPONSE_ACK));
     TEST_ASSERT_EQUAL_STRING("ERR" , response_type_to_string(RESPONSE_ERR));
     TEST_ASSERT_EQUAL_STRING("INFO", response_type_to_string(RESPONSE_INFO));
 }
 
-void test_response_status_to_string(void){
+void test_response_status_to_string(){
     for(size_t i=0; i<sizeof(status_table)/sizeof(status_table[0]); i++){
         TEST_ASSERT_EQUAL_STRING(status_table[i].str, response_status_to_string(status_table[i].status));
     }
 }
 
-int main(void){
+int main(){
     UNITY_BEGIN();
     RUN_TEST(test_parse_request_type);
     RUN_TEST(test_parse_response_type);
