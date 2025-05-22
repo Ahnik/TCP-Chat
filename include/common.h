@@ -14,6 +14,9 @@
 #define ERR_BUFFER_SIZE_EXCEEDED -3
 #define ERR_RECEIVING -4
 
+// Server port
+#define SERVER_PORT 4221
+
 // Function for handling errors
 // It displays the error encountered and then kills the process
 void exit_with_error(const char *fmt, ...);
