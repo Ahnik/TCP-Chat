@@ -1,6 +1,6 @@
 #include "message.h"
 #include "protocol.h"
-#include "error.h"
+#include "common.h"
 #include <string.h>
 #include <stdlib.h>
 #include <arpa/inet.h>

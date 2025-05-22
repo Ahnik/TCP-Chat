@@ -1,6 +1,5 @@
 #include "net.h"
 #include "common.h"
-#include "error.h"
 #include <arpa/inet.h>
 #include <string.h>
 #include <stdlib.h>

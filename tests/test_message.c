@@ -1,6 +1,6 @@
 #include "unity.h"
 #include "message.h"
-#include "error.h"
+#include "common.h"
 #include <stdlib.h>
 #include <string.h>
 
