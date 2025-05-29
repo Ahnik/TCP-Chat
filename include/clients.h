@@ -1,0 +1,26 @@
+#ifndef CLIENTS_H
+#define CLIENTS_H
+
+#include "common.h"
+
+// Struct to create a linked list data structure to store the client data
+// The client data includes the client username and their socket file descriptor through which the server communicates with them 
+typedef struct client{
+    int socketfd;
+    char username[MAX_USERNAME_LEN];
+    struct client *next;
+} Client;
+
+// Function to add a new client to the global client list
+void add_client(int socketfd, const char *username);
+
+// Function to remove a client from the global client list
+void remove_client(int socketfd);
+
+// Function to broadcast a message to every client in the global client list
+void broadcast_message(const char *message);
+
+// Function to map out client usernames to the client file descriptors
+const char *find_client_by_name(int socketfd);
+
+#endif

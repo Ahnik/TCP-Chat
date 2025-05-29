@@ -156,8 +156,8 @@ void test_encode_response_err(){
 }
 
 void test_encode_response_info(){
-    Response response = {RESPONSE_INFO, STATUS_INFO_MESSAGE, "Alice:Hello there!"};
-    uint32_t length = 31;
+    Response response = {RESPONSE_INFO, STATUS_INFO_MESSAGE, "Alice: Hello there!"};
+    uint32_t length = 32;
     uint32_t buffer_capacity = length + sizeof(length) + 1;
     uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
     if(!buffer) TEST_ABORT();
@@ -165,13 +165,13 @@ void test_encode_response_info(){
     TEST_ASSERT_EQUAL(ERR_OK, encode_response(&buffer, buffer_capacity, length, &response));
     buffer[buffer_capacity-1] = '\0';
     char *payload = (char *)(buffer + sizeof(length));
-    TEST_ASSERT_EQUAL_STRING("INFO|MESSAGE|Alice:Hello there!", payload);
+    TEST_ASSERT_EQUAL_STRING("INFO|MESSAGE|Alice: Hello there!", payload);
     free(buffer);
 }
 
 void test_encode_response_invalid(){
-    Response response = {RESPONSE_INFO, STATUS_INFO_MESSAGE, "Alice:Hi"};
-    uint32_t length = 31;
+    Response response = {RESPONSE_INFO, STATUS_INFO_MESSAGE, "Alice: Hi"};
+    uint32_t length = 32;
     uint32_t buffer_capacity = 17;
     uint8_t *buffer = (uint8_t *)calloc(buffer_capacity, sizeof(*buffer));
     if(!buffer) TEST_ABORT();
