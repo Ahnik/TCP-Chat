@@ -6,6 +6,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// The delimiter and the delimiter length
+#define DELIMITER "|"
+#define DELIMITER_LENGTH strlen(DELIMITER)
+
 // Request structure
 typedef struct{
     RequestType type;
