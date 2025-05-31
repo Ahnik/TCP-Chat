@@ -77,6 +77,7 @@ int broadcast_message(const char *message){
 }
 
 Client *find_client_by_name(const char *username){
+    pthread_mutex_lock(&client_list_mutex);
     Client *client = client_list_head;
 
     while(client){
@@ -84,7 +85,22 @@ Client *find_client_by_name(const char *username){
         client = client->next;
     }
 
+    pthread_mutex_unlock(&client_list_mutex);
     return client;
+}
+
+int count_clients(){
+    pthread_mutex_lock(&client_list_mutex);
+    Client *client = client_list_head;
+    int count = 0;
+
+    while(client){
+        count++;
+        client = client->next;
+    }
+
+    pthread_mutex_unlock(&client_list_mutex);
+    return count;
 }
 
 void cleanup_clients(){

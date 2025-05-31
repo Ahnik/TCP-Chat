@@ -1,9 +1,19 @@
 #include "unity.h"
 #include "clients.h"
+#include <pthread.h>
 
-void setUp(){}
+#define N 10
 
-void tearDown(){}
+static pthread_mutex_t mutex;
+
+void setUp(){
+    pthread_mutex_init(&mutex, NULL);
+}
+
+void tearDown(){
+    cleanup_clients();
+    pthread_mutex_destroy(&mutex);
+}
 
 void test_add_client_empty_list(){
     

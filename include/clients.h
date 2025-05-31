@@ -11,6 +11,7 @@ typedef struct client{
     struct client *next;
 } Client;
 
+// All the functions below will use mutex locks in order to ensure thread-safe operations
 // Function to add a new client to the global client list
 int add_client(int socketfd, const char *username);
 
@@ -22,6 +23,9 @@ int broadcast_message(const char *message);
 
 // Function to map out client usernames to the client file descriptors
 Client *find_client_by_name(const char *username);
+
+// Function to count the number of clients on the client list
+int count_clients();
 
 // Function to clean up the client list 
 void cleanup_clients();
