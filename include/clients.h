@@ -21,7 +21,7 @@ int remove_client(int socketfd);
 int broadcast_message(const char *message);
 
 // Function to map out client usernames to the client file descriptors
-const char *find_client_by_name(int socketfd);
+Client *find_client_by_name(const char *username);
 
 // Function to clean up the client list 
 void cleanup_clients();
