@@ -105,13 +105,13 @@ int count_clients(){
 
 void cleanup_clients(){
     pthread_mutex_lock(&client_list_mutex);
-    Client *client = client_list_head->next;
-    Client *prev_client = client_list_head;
+    Client *client = client_list_head;
+    Client *prev_client = NULL;
 
     while(client){
-        free(prev_client);
         prev_client = client;
         client = client->next;
+        free(prev_client);
     }
     client_list_head = NULL;
     client_list_tail = NULL;
