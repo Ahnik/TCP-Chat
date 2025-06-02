@@ -89,6 +89,19 @@ Client *find_client_by_name(const char *username){
     return client;
 }
 
+Client *find_client_by_socket(int socketfd){
+    pthread_mutex_lock(&client_list_mutex);
+    Client *client = client_list_head;
+
+    while(client){
+        if(client->socketfd == socketfd) break;
+        client = client->next;
+    }
+
+    pthread_mutex_unlock(&client_list_mutex);
+    return client;
+}
+
 int count_clients(){
     pthread_mutex_lock(&client_list_mutex);
     Client *client = client_list_head;

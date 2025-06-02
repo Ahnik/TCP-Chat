@@ -21,8 +21,11 @@ int remove_client(int socketfd);
 // Function to broadcast a message to every client in the global client list
 int broadcast_message(const char *message);
 
-// Function to map out client usernames to the client file descriptors
+// Function to find a particular client based on its username
 Client *find_client_by_name(const char *username);
+
+// Function to find a particular client based on its socket fd
+Client *find_client_by_socket(int socketfd);
 
 // Function to count the number of clients on the client list
 int count_clients();
