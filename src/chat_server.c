@@ -72,13 +72,16 @@ int main(int argc, char **argv){
         }
 
         if(slot_available){
-            char message[29] = "You have successfully joined";
+            char message[29] = "You have successfully joined\n";
             send(client_socket, message, sizeof(message), 0);
         }else{
-            char message[24] = "The chat server is full";
+            // If no available thread slot is found, return error to the client and then close the client socket
+            char message[24] = "The chat server is full\n";
             send(client_socket, message, sizeof(message), 0);
+            close(client_socket);
         }
     }
 
+    close(server_socket);
     return 0;
 }
