@@ -6,6 +6,7 @@
 #define MAX_PAYLOAD_SIZE 2048
 #define MAX_MESSAGE_SIZE (MAX_PAYLOAD_SIZE - MAX_USERNAME_LEN - 6)
 #define HEADER_SIZE 4
+#define MAX_CLIENTS 10
 
 // Error codes
 #define ERR_OK                    0
