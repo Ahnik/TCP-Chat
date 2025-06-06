@@ -27,16 +27,16 @@ void *thread_function(void *arg){
 void handle_client(int client_socket){
     while(true){
         // Read the request length from the client
-        uint32_t reqeust_length = read_payload_len(client_socket);
-        if(reqeust_length == 0){
+        uint32_t payload_length = read_payload_len(client_socket);
+        if(payload_length == 0){
             fprintf(stderr, "Reading request length failed!\n");
             fflush(stderr);
             continue;
         }
 
         // Creating the request buffer to store the incoming client request
-        uint8_t *request_buffer = (uint8_t *)calloc(reqeust_length+1, sizeof(*request_buffer));
-        if(request_buffer == NULL){
+        uint8_t *payload_buffer = (uint8_t *)calloc(payload_length+1, sizeof(*payload_buffer));
+        if(payload_buffer == NULL){
             fprintf(stderr, "Memory allocation for request buffer failed!\n");
             fflush(stderr);
             continue;
@@ -44,17 +44,17 @@ void handle_client(int client_socket){
 
         // Receiving the client request 
         int error;
-        if((error = recv_all(client_socket, request_buffer, reqeust_length)) != ERR_OK){
+        if((error = recv_all(client_socket, payload_buffer, payload_length)) != ERR_OK){
             fprintf(stderr, "Receiving from client failed!\n");
             fprintf(stderr, error_to_string(error));
             fprintf(stderr, "\n");
             fflush(stderr);
-            free(request_buffer);
+            free(payload_buffer);
             continue;
         }
 
         // Null-terminate the buffer to read it as a string of characters
-        request_buffer[reqeust_length] = '\0';
+        payload_buffer[payload_length] = '\0';
     }
 
     // Close the client socket
