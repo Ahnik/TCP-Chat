@@ -1,4 +1,5 @@
 #include "client_handler.h"
+#include "request_handler.h"
 #include "net.h"
 #include "message.h"
 #include "protocol.h"
@@ -78,7 +79,26 @@ void handle_client(int client_socket){
             continue;
         }
 
-        
+        // Handle the request of the client
+        switch(request->type){
+            case REQUEST_MSG:
+                handle_msg_request(client_socket, request);
+                break;
+            case REQUEST_NAME:
+                handle_name_request(client_socket, request);
+                break;
+            case REQUEST_JOIN:
+                handle_join_request(client_socket, request);
+                break;
+            case REQUEST_LEAVE:
+                handle_leave_request(client_socket, request);
+                leave = true;
+                break;
+        }
+
+        // Free up all the dynamically allocated memory
+        free(payload_buffer);
+        free(request);
     }
 
     // Close the client socket
