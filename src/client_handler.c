@@ -94,6 +94,9 @@ void handle_client(int client_socket){
                 handle_leave_request(client_socket, request);
                 leave = true;
                 break;
+            default:
+                handle_invalid_request(client_socket);
+                break;
         }
 
         // Free up all the dynamically allocated memory
