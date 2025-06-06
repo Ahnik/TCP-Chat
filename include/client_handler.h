@@ -18,6 +18,6 @@ typedef struct{
 void *thread_function(void *arg);
 
 // Function to handle the client on the given client socket
-int handle_client(int client_socket);
+void handle_client(int client_socket);
 
 #endif

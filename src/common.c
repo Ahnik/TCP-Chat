@@ -10,14 +10,14 @@ void exit_with_error(const char *fmt, ...){
     va_list ap;
 
     va_start(ap, fmt);
-    vfprintf(stdout, fmt, ap);
-    fprintf(stdout, "\n");
-    fflush(stdout);
+    vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
+    fflush(stderr);
 
     if(errno_save != 0){
-        fprintf(stdout, "(errno = %d) : %s\n", errno_save, strerror(errno_save));
-        fprintf(stdout, "\n");
-        fflush(stdout);
+        fprintf(stderr, "(errno = %d) : %s\n", errno_save, strerror(errno_save));
+        fprintf(stderr, "\n");
+        fflush(stderr);
     }
     va_end(ap);
 

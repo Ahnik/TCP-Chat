@@ -19,6 +19,9 @@
 // Server port
 #define SERVER_PORT 4221
 
+// Server backlog
+#define SERVER_BACKLOG 10
+
 // Function for handling errors
 // It displays the error encountered and then kills the process
 void exit_with_error(const char *fmt, ...);

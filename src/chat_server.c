@@ -1,6 +1,5 @@
 #include "client_handler.h"
 #include "common.h"
-#include "net.h"
 #include <sys/socket.h>
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -8,6 +7,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
  
 // Declaring the pool of thread slots to handle the clients
 static ThreadSlot *thread_slots[MAX_CLIENTS];
@@ -29,18 +29,22 @@ int main(int argc, char **argv){
 
     // Create the server socket
     int server_socket;
-    if((server_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+    if((server_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
         exit_with_error("Failed to create socket!");
     
     // Initialize the address struct
     struct sockaddr_in server_addr;
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = INADDR_ANY;
-    server_addr.sin_port = htons(SERVER_PORT);
+    server_addr.sin_family      = AF_INET;
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_addr.sin_port        = htons(SERVER_PORT);
 
     // Bind the server address to the server socket
-    if(bind(server_socket, &server_addr, sizeof(server_addr)) == -1)
+    if(bind(server_socket, &server_addr, sizeof(server_addr)) < 0)
         exit_with_error("Bind Failed!");
+
+    // Mark the server socket as a passive socket that will listen for incoming transmissions
+    if(listen(server_socket, SERVER_BACKLOG) < 0)
+        exit_with_error("Listen Failed!");
 
     while(true){
         printf("Waiting for connection...\n");
@@ -50,10 +54,13 @@ int main(int argc, char **argv){
 
         // Accept the client
         client_socket = accept(server_socket, &client_addr, &addr_size);
-        if(client_socket == -1){
-            printf("Accept Failed!\n");
+        if(client_socket < 0){
+            fprintf(stderr, "Accept Failed!\n");
+            fprintf(stderr, "(errno = %d) : %s\n", errno, strerror(errno));
+            fflush(stderr);
             continue;
         }
+        printf("Connected...\n");
 
         bool slot_available = false;
         // Once the client is accepted, the server will look for any available thread slot.
