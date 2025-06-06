@@ -2,6 +2,7 @@
 #include "protocol.h"
 #include "common.h"
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
 
@@ -75,7 +76,7 @@ int decode_request(Request *request, const char *payload){
     }
 
     // The second token is the username of the client sending the request
-    strcpy(request->username, payload_token);
+    snprintf(request->username, MAX_USERNAME_LEN, "%s", payload_token);
 
     // In case of MSG and NAME requests, the third token will be the message
     if((request->type == REQUEST_MSG) || (request->type == REQUEST_NAME)){
@@ -88,7 +89,7 @@ int decode_request(Request *request, const char *payload){
             free(payload_duplicate);
             return ERR_BUFFER_SIZE_EXCEEDED;
         }
-        strcpy(request->message, payload_token);
+        snprintf(request->message, MAX_MESSAGE_SIZE, "%s", payload_token);
     }
 
     free(payload_duplicate);
@@ -179,7 +180,7 @@ int decode_response(Response *response, const char *payload){
             free(payload_duplicate);
             return ERR_INVALID;
         }
-        strcpy(response->message, payload_token);
+        snprintf(response->message, MAX_MESSAGE_SIZE, "%s", payload_token);
     }
 
     free(payload_duplicate);

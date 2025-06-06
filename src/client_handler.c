@@ -1,6 +1,7 @@
 #include "client_handler.h"
 #include "net.h"
 #include "message.h"
+#include "protocol.h"
 #include <pthread.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -25,8 +26,9 @@ void *thread_function(void *arg){
 }
 
 void handle_client(int client_socket){
-    while(true){
-        // Read the request length from the client
+    bool leave = false; // Boolean variable to determine if the client wants to leave or not
+    while(leave){
+        // Read the payload length from the client
         uint32_t payload_length = read_payload_len(client_socket);
         if(payload_length == 0){
             fprintf(stderr, "Reading request length failed!\n");
@@ -34,10 +36,10 @@ void handle_client(int client_socket){
             continue;
         }
 
-        // Creating the request buffer to store the incoming client request
+        // Creating the payload buffer to store the incoming client request
         uint8_t *payload_buffer = (uint8_t *)calloc(payload_length+1, sizeof(*payload_buffer));
         if(payload_buffer == NULL){
-            fprintf(stderr, "Memory allocation for request buffer failed!\n");
+            fprintf(stderr, "Memory allocation for payload buffer failed!\n");
             fflush(stderr);
             continue;
         }
@@ -55,6 +57,28 @@ void handle_client(int client_socket){
 
         // Null-terminate the buffer to read it as a string of characters
         payload_buffer[payload_length] = '\0';
+
+        // Allocate memory for the Request struct
+        Request *request = (Request *)malloc(sizeof(*request));
+        if(request == NULL){
+            fprintf(stderr, "Memory allocation for request failed!\n");
+            fflush(stderr);
+            free(payload_buffer);
+            continue;
+        }
+
+        // Decode the request 
+        if((error = decode_request(request, payload_buffer)) != ERR_OK){
+            fprintf(stderr, "Decoding reqeust error!\n");
+            fprintf(stderr, error_to_string(error));
+            fprintf(stderr, "\n");
+            fflush(stderr);
+            free(payload_buffer);
+            free(request);
+            continue;
+        }
+
+        
     }
 
     // Close the client socket
