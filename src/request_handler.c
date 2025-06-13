@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <strings.h>
 
 void handle_name_request(int client_socket, const Request *request){
     Client *client = find_client_by_socket(client_socket);
@@ -19,7 +20,35 @@ void handle_name_request(int client_socket, const Request *request){
 
     // Prepare the message buffer to be sent to the client
     uint32_t length = strlen(response_type_to_string(response->type)) + strlen(response_status_to_string(response->status)) + DELIMITER_LENGTH;
+    uint8_t response_buffer[MAX_PAYLOAD_SIZE];
+    uint8_t *ptr = response_buffer;     // Pointer to the first element of the buffer
+    bzero(response_buffer, MAX_PAYLOAD_SIZE);
+
+    // Encode the response into the response buffer
+    int error;
+    if((error = encode_response(&ptr, MAX_PAYLOAD_SIZE, length, response)) != ERR_OK){
+        fprintf(stderr, "Response encoding error!\n");
+        fprintf(stderr, error_to_string(error));
+        fprintf(stderr, "\n");
+        fflush(stderr);
+        free(response);
+        return;
+    }
+
+    // Send the message to the client
+    if((error = send_all(client_socket, &response_buffer, length)) != ERR_OK){
+        fprintf(stderr, "Response sending error!\n");
+        fprintf(stderr, error_to_string(error));
+        fprintf(stderr, "\n");
+        fflush(stderr);
+        free(response);
+        return;
+    }
+
+    // Prepare response to be broadcasted to all clients
     
+
+    free(response);
 }
 
 void handle_msg_request(int client_socket, const Request *request){
