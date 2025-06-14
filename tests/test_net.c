@@ -12,7 +12,7 @@ void tearDown(){}
 
 void test_read_payload_len(){
     int sv[2];
-    if(socketpair(AF_UNIX, SOCK_STREAM, 0, sv) != 0) TEST_ABORT();
+    if(socketpair(AF_UNIX, SOCK_STREAM, 0, sv) != 0) TEST_IGNORE();
     uint32_t length = htonl(32);
     size_t total_bytes = 0;
     while(total_bytes < sizeof(length)){
@@ -43,7 +43,7 @@ void test_read_payload_len(){
 
 void test_recv_all(){
     int sv[2];
-    if(socketpair(AF_UNIX, SOCK_STREAM, 0, sv) != 0) TEST_ABORT();
+    if(socketpair(AF_UNIX, SOCK_STREAM, 0, sv) != 0) TEST_IGNORE();
     const char *payload = "MSG|Alice|Hello there!";
     uint32_t length = strlen(payload);
     uint8_t *buffer = (uint8_t *)calloc(length+1, sizeof(*buffer));
@@ -63,7 +63,7 @@ void test_recv_all(){
 
 void test_send_all(){
     int sv[2];
-    if(socketpair(AF_UNIX, SOCK_STREAM, 0, sv) != 0) TEST_ABORT();
+    if(socketpair(AF_UNIX, SOCK_STREAM, 0, sv) != 0) TEST_IGNORE();
     const char *payload = "MSG|Alice|Hello there!";
     uint32_t length = strlen(payload);
     uint8_t *buffer = (uint8_t *)calloc(length+1, sizeof(*buffer));

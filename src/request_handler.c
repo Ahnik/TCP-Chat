@@ -10,8 +10,13 @@
 
 void handle_name_request(int client_socket, const Request *request){
     Client *client = find_client_by_socket(client_socket);
-    Response *response = (Response *)malloc(sizeof(*response));
+    if(client == NULL){
+        fprintf(stderr, "Unable to find client!\n");
+        fflush(stderr);
+        return;
+    }
 
+    Response *response = (Response *)malloc(sizeof(*response));
     if(response == NULL){
         fprintf(stderr, "Memory allocation for response failed!\n");
         fprintf(stderr, "(error = %d) : %s\n", errno, strerror(errno));
@@ -87,6 +92,7 @@ void handle_name_request(int client_socket, const Request *request){
         return;
     }
 
+    // Free up dynamically allocated memory
     free(response);
 }
 
