@@ -43,6 +43,9 @@ void test_handle_name_request(){
 
         TEST_ASSERT_EQUAL_STRING(name, client->username);
 
+        char request_buffer[MAX_PAYLOAD_SIZE];
+        
+
         free(request);
         name[0]++;
     }

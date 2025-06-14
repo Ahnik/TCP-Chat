@@ -186,3 +186,17 @@ int decode_response(Response *response, const char *payload){
     free(payload_duplicate);
     return ERR_OK;
 }
+
+uint32_t request_length(const Request *request){
+    if(request->type == REQUEST_NAME || request->type == REQUEST_MSG)
+        return strlen(request_type_to_string(request->type)) + strlen(request->username) + strlen(request->message) + 2*DELIMITER_LENGTH;
+    else
+        return strlen(request_type_to_string(request->type)) + strlen(request->username) + DELIMITER_LENGTH;
+}
+
+uint32_t response_length(const Response *response){
+    if(response->type == RESPONSE_INFO)
+        return strlen(response_type_to_string(response->type)) + strlen(response_status_to_string(response->status)) + strlen(response->message) + 2*DELIMITER_LENGTH;
+    else
+        return strlen(response_type_to_string(response->type)) + strlen(response_status_to_string(response->status)) + DELIMITER_LENGTH;
+}

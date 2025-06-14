@@ -36,4 +36,10 @@ int encode_response(uint8_t **buffer, size_t buffer_capacity, uint32_t length, c
 // Function decodes the response the payload to fill up the response struct
 int decode_response(Response *response, const char *payload);
 
+// Function to return the length of a request
+uint32_t request_length(const Request *request);
+
+// Function to return the length of a response
+uint32_t response_length(const Response *response);
+
 #endif

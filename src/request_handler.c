@@ -38,7 +38,7 @@ void handle_name_request(int client_socket, const Request *request){
     response->status = STATUS_ACK_NAME_SET;
 
     // Prepare the message buffer to be sent to the client
-    uint32_t length = strlen(response_type_to_string(response->type)) + strlen(response_status_to_string(response->status)) + DELIMITER_LENGTH;
+    uint32_t length = response_length(response);
     uint8_t response_buffer[MAX_PAYLOAD_SIZE];
     bzero(response_buffer, MAX_PAYLOAD_SIZE);
     uint8_t *ptr = response_buffer;     // Pointer to the first element of the buffer
@@ -72,7 +72,7 @@ void handle_name_request(int client_socket, const Request *request){
     // Clear the response buffer and update the length
     bzero(response_buffer, MAX_PAYLOAD_SIZE);
     ptr = response_buffer;
-    length = strlen(response_type_to_string(response->type)) + strlen(response_status_to_string(response->status)) + strlen(response->message) + 2*DELIMITER_LENGTH;
+    length = response_length(response);
 
     // Encode the response into the response buffer
     if((error = encode_response(&ptr, MAX_PAYLOAD_SIZE, length, response)) != ERR_OK){

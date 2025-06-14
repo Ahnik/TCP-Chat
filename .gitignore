@@ -19,7 +19,6 @@
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
-Makefile
 *.cmake
 
 # Auto-generated dependency files
