@@ -38,6 +38,11 @@ void test_handle_name_request(){
 
         handle_name_request(socket_pairs[i][0], request);
 
+        client = find_client_by_socket(socket_pairs[i][0]);
+        if(client == NULL) TEST_FAIL();
+
+        TEST_ASSERT_EQUAL_STRING(name, client->username);
+
         free(request);
         name[0]++;
     }
@@ -45,5 +50,6 @@ void test_handle_name_request(){
 
 int main(){
     UNITY_BEGIN();
+    RUN_TEST(test_handle_name_request);
     return UNITY_END();
 }

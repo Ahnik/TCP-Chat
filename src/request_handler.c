@@ -2,7 +2,9 @@
 #include "clients.h"
 #include "message.h"
 #include "net.h"
+#include "protocol.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <strings.h>
@@ -45,7 +47,7 @@ void handle_name_request(int client_socket, const Request *request){
     int error;
     if((error = encode_response(&ptr, MAX_PAYLOAD_SIZE, length, response)) != ERR_OK){
         fprintf(stderr, "Response encoding error!\n");
-        fprintf(stderr, error_to_string(error));
+        fprintf(stderr, "%s", error_to_string(error));
         fprintf(stderr, "\n");
         fflush(stderr);
         free(response);
@@ -53,9 +55,9 @@ void handle_name_request(int client_socket, const Request *request){
     }
 
     // Send the message to the client
-    if((error = send_all(client_socket, &response_buffer, length)) != ERR_OK){
+    if((error = send_all(client_socket, response_buffer, length)) != ERR_OK){
         fprintf(stderr, "Response sending error!\n");
-        fprintf(stderr, error_to_string(error));
+        fprintf(stderr, "%s", error_to_string(error));
         fprintf(stderr, "\n");
         fflush(stderr);
         free(response);
@@ -75,7 +77,7 @@ void handle_name_request(int client_socket, const Request *request){
     // Encode the response into the response buffer
     if((error = encode_response(&ptr, MAX_PAYLOAD_SIZE, length, response)) != ERR_OK){
         fprintf(stderr, "Response encoding error!\n");
-        fprintf(stderr, error_to_string(error));
+        fprintf(stderr, "%s", error_to_string(error));
         fprintf(stderr, "\n");
         fflush(stderr);
         free(response);
@@ -83,9 +85,9 @@ void handle_name_request(int client_socket, const Request *request){
     }
 
     // Send the response to all the clients
-    if((error = broadcast_message((char *)&response_buffer)) != ERR_OK){
+    if((error = broadcast_message((char *)response_buffer)) != ERR_OK){
         fprintf(stderr, "Unable to send all messages\n");
-        fprintf(stderr, error_to_string(error));
+        fprintf(stderr, "%s", error_to_string(error));
         fprintf(stderr, "\n");
         fflush(stderr);
         free(response);
@@ -95,7 +97,7 @@ void handle_name_request(int client_socket, const Request *request){
     // Free up dynamically allocated memory
     free(response);
 }
-
+/*
 void handle_msg_request(int client_socket, const Request *request){
 
 }
@@ -110,4 +112,4 @@ void handle_leave_request(int client_socket, const Request *request){
 
 void handle_invalid_request(int client_socket){
 
-}
+}*/
