@@ -55,7 +55,7 @@ void handle_name_request(int client_socket, const Request *request){
     }
 
     // Send the message to the client
-    if((error = send_all(client_socket, response_buffer, length)) != ERR_OK){
+    if((error = send_all(client_socket, response_buffer, length + HEADER_SIZE)) != ERR_OK){
         fprintf(stderr, "Response sending error!\n");
         fprintf(stderr, "%s", error_to_string(error));
         fprintf(stderr, "\n");

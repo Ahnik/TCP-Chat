@@ -1,6 +1,6 @@
 # === CONFIG ===
 CC = gcc
-CFLAGS = -Wall -Wextra -Wpedantic -Iinclude -Itests/unity -pthread -fsanitize=thread
+CFLAGS = -Wall -Wextra -Wpedantic -Iinclude -Itests/unity -pthread -fsanitize=thread -g
 SRC_DIR = src
 TEST_DIR = tests
 BIN_DIR = bin
