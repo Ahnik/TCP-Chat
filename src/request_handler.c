@@ -85,7 +85,7 @@ void handle_name_request(int client_socket, const Request *request){
     }
 
     // Send the response to all the clients
-    if((error = broadcast_message((char *)response_buffer)) != ERR_OK){
+    if((error = broadcast_message(response_buffer, length + HEADER_SIZE)) != ERR_OK){
         fprintf(stderr, "Unable to send all messages\n");
         fprintf(stderr, "%s", error_to_string(error));
         fprintf(stderr, "\n");

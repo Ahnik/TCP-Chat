@@ -62,13 +62,13 @@ int remove_client(int socketfd){
     return err_code;
 }
 
-int broadcast_message(const char *message){
+int broadcast_message(const uint8_t *message, uint32_t message_length){
     pthread_mutex_lock(&client_list_mutex);
     Client *client = client_list_head;
     int err_code = ERR_OK;
 
     while(client){
-        err_code = send_all(client->socketfd, (uint8_t *)message, strlen(message));
+        err_code = send_all(client->socketfd, message, message_length);
         client = client->next;
     }
 

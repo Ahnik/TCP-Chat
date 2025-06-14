@@ -2,6 +2,7 @@
 #define CLIENTS_H
 
 #include "common.h"
+#include <stdint.h>
 
 // Struct to create a linked list data structure to store the client data
 // The client data includes the client username and their socket file descriptor through which the server communicates with them 
@@ -19,7 +20,7 @@ int add_client(int socketfd, const char *username);
 int remove_client(int socketfd);
 
 // Function to broadcast a message to every client in the global client list
-int broadcast_message(const char *message);
+int broadcast_message(const uint8_t *message, uint32_t message_length);
 
 // Function to find a particular client based on its username
 Client *find_client_by_name(const char *username);
