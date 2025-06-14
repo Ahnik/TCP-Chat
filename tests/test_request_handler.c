@@ -36,6 +36,9 @@ void test_handle_name_request(){
         Client *client = find_client_by_socket(socket_pairs[i][0]);
         if(client == NULL) TEST_IGNORE();
 
+        char prev_name[MAX_USERNAME_LEN];
+        snprintf(prev_name, MAX_USERNAME_LEN, "%s", client->username);
+
         request->type = REQUEST_NAME;
         snprintf(request->username, MAX_USERNAME_LEN, "%s", client->username);
         snprintf(request->message, MAX_MESSAGE_SIZE, "%s", name);
@@ -60,6 +63,24 @@ void test_handle_name_request(){
         TEST_ASSERT_EQUAL_INT(ERR_OK, decode_response(response, response_buffer));
         TEST_ASSERT_EQUAL(RESPONSE_ACK, response->type);
         TEST_ASSERT_EQUAL(STATUS_ACK_NAME_SET, response->status);
+
+        for(int j=0; j<MAX_CLIENTS; j++){
+            bzero(response, sizeof(*response));
+            bzero(response_buffer, MAX_PAYLOAD_SIZE);
+
+            char payload[MAX_PAYLOAD_SIZE];
+            snprintf(payload, MAX_PAYLOAD_SIZE, "INFO|NAME_CHANGED|--%s has changed their name to %s--", prev_name, name);
+
+            response_length = read_payload_len(socket_pairs[j][1]);
+            TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen(payload)), response_length);
+            TEST_ASSERT_EQUAL_INT(ERR_OK, recv_all(socket_pairs[j][1], (uint8_t *)response_buffer, response_length));
+            response_buffer[response_length] = 0;
+            TEST_ASSERT_EQUAL_STRING(payload, response_buffer);
+
+            TEST_ASSERT_EQUAL_INT(ERR_OK, decode_response(response, response_buffer));
+            TEST_ASSERT_EQUAL(RESPONSE_INFO, response->type);
+            TEST_ASSERT_EQUAL(STATUS_INFO_NAME_CHANGED, response->status);
+        }
 
         free(response);
         free(request);
