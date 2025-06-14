@@ -2,11 +2,15 @@
 #include "request_handler.h"
 #include "clients.h"
 #include "message.h"
+#include "net.h"
 #include "common.h"
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <strings.h>
+#include <string.h>
 
 // Unity Test Setup/Teardown functions
 void setUp(){
@@ -39,13 +43,25 @@ void test_handle_name_request(){
         handle_name_request(socket_pairs[i][0], request);
 
         client = find_client_by_socket(socket_pairs[i][0]);
-        if(client == NULL) TEST_FAIL();
+        TEST_ASSERT_NOT_NULL(client);
 
         TEST_ASSERT_EQUAL_STRING(name, client->username);
 
-        char request_buffer[MAX_PAYLOAD_SIZE];
-        
+        char response_buffer[MAX_PAYLOAD_SIZE];
+        bzero(response_buffer, MAX_PAYLOAD_SIZE);
 
+        uint32_t response_length = read_payload_len(socket_pairs[i][1]);
+        TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen("ACK|NAME_SET")), response_length);
+        TEST_ASSERT_EQUAL_INT(ERR_OK, recv_all(socket_pairs[i][1], (uint8_t *)response_buffer, response_length));
+        response_buffer[response_length] = 0;
+        TEST_ASSERT_EQUAL_STRING("ACK|NAME_SET", response_buffer);
+
+        Response *response = (Response *)malloc(sizeof(*response));
+        TEST_ASSERT_EQUAL_INT(ERR_OK, decode_response(response, response_buffer));
+        TEST_ASSERT_EQUAL(RESPONSE_ACK, response->type);
+        TEST_ASSERT_EQUAL(STATUS_ACK_NAME_SET, response->status);
+
+        free(response);
         free(request);
         name[0]++;
     }

@@ -218,7 +218,6 @@ void test_decode_response_invalid(){
 
     payload = "INFO|USER_JOINED|";
     TEST_ASSERT_EQUAL(ERR_INVALID, decode_response(&response, payload));
-
 }
 
 int main(){
