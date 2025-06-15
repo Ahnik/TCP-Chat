@@ -53,10 +53,10 @@ void test_handle_name_request(){
         char response_buffer[MAX_PAYLOAD_SIZE];
         bzero(response_buffer, MAX_PAYLOAD_SIZE);
 
-        uint32_t response_length = read_payload_len(socket_pairs[i][1]);
-        TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen("ACK|NAME_SET")), response_length);
-        TEST_ASSERT_EQUAL_INT(ERR_OK, recv_all(socket_pairs[i][1], (uint8_t *)response_buffer, response_length));
-        response_buffer[response_length] = 0;
+        uint32_t length = read_payload_len(socket_pairs[i][1]);
+        TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen("ACK|NAME_SET")), length);
+        TEST_ASSERT_EQUAL_INT(ERR_OK, recv_all(socket_pairs[i][1], (uint8_t *)response_buffer, length));
+        response_buffer[length] = 0;
         TEST_ASSERT_EQUAL_STRING("ACK|NAME_SET", response_buffer);
 
         Response *response = (Response *)malloc(sizeof(*response));
@@ -71,10 +71,10 @@ void test_handle_name_request(){
             char payload[MAX_PAYLOAD_SIZE];
             snprintf(payload, MAX_PAYLOAD_SIZE, "INFO|NAME_CHANGED|--%s has changed their name to %s--", prev_name, name);
 
-            response_length = read_payload_len(socket_pairs[j][1]);
-            TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen(payload)), response_length);
-            TEST_ASSERT_EQUAL_INT(ERR_OK, recv_all(socket_pairs[j][1], (uint8_t *)response_buffer, response_length));
-            response_buffer[response_length] = 0;
+            length = read_payload_len(socket_pairs[j][1]);
+            TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen(payload)), length);
+            TEST_ASSERT_EQUAL_INT(ERR_OK, recv_all(socket_pairs[j][1], (uint8_t *)response_buffer, length));
+            response_buffer[length] = 0;
             TEST_ASSERT_EQUAL_STRING(payload, response_buffer);
 
             TEST_ASSERT_EQUAL_INT(ERR_OK, decode_response(response, response_buffer));
@@ -88,8 +88,68 @@ void test_handle_name_request(){
     }
 }
 
+void test_handle_msg_request(){
+    int socket_pairs[MAX_CLIENTS][2];   
+    char name[2] = "a";
+    for(int i=0; i<MAX_CLIENTS; i++){
+        if(socketpair(AF_UNIX, SOCK_STREAM, 0, socket_pairs[i]) != 0) TEST_IGNORE();
+        if(add_client(socket_pairs[i][0], name) != ERR_OK) TEST_IGNORE();   // 0 is for sending, 1 is for receiving
+        name[0]++;
+    }
+
+    char msg[2] = "a";
+    for(int i=0; i<MAX_CLIENTS; i++){
+        Request *request = (Request *)malloc(sizeof(*request));
+        if(request == NULL) TEST_IGNORE();
+        Client *client = find_client_by_socket(socket_pairs[i][0]);
+        if(client == NULL) TEST_IGNORE();
+
+        request->type = REQUEST_MSG;
+        snprintf(request->username, MAX_USERNAME_LEN, "%s", client->username);
+        snprintf(request->message, MAX_MESSAGE_SIZE, "%s", msg);
+
+        handle_msg_request(socket_pairs[i][0], request);
+
+        char response_buffer[MAX_PAYLOAD_SIZE];
+        bzero(response_buffer, MAX_PAYLOAD_SIZE);
+
+        uint32_t length = read_payload_len(socket_pairs[i][1]);
+        TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen("ACK|OK")), length);
+        TEST_ASSERT_EQUAL_INT(ERR_OK, recv_all(socket_pairs[i][1], (uint8_t *)response_buffer, length));
+        response_buffer[length] = 0;
+        TEST_ASSERT_EQUAL_STRING("ACK|OK", response_buffer);
+
+        Response *response = (Response *)malloc(sizeof(*response));
+        TEST_ASSERT_EQUAL_INT(ERR_OK, decode_response(response, response_buffer));
+        TEST_ASSERT_EQUAL(RESPONSE_ACK, response->type);
+        TEST_ASSERT_EQUAL(STATUS_ACK_OK, response->status);
+
+        for(int j=0; j<MAX_CLIENTS; j++){
+            bzero(response, sizeof(*response));
+            bzero(response_buffer, MAX_PAYLOAD_SIZE);
+
+            char payload[MAX_PAYLOAD_SIZE];
+            snprintf(payload, MAX_PAYLOAD_SIZE, "INFO|MESSAGE|%s: %s", client->username, msg);
+
+            length = read_payload_len(socket_pairs[j][1]);
+            TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen(payload)), length);
+            TEST_ASSERT_EQUAL_INT(ERR_OK, recv_all(socket_pairs[j][1], (uint8_t *)response_buffer, length));
+            response_buffer[length] = 0;
+            TEST_ASSERT_EQUAL_STRING(payload, response_buffer);
+
+            TEST_ASSERT_EQUAL_INT(ERR_OK, decode_response(response, response_buffer));
+            TEST_ASSERT_EQUAL(RESPONSE_INFO, response->type);
+            TEST_ASSERT_EQUAL(STATUS_INFO_MESSAGE, response->status);
+        }
+
+        free(response);
+        free(request);
+    }
+}
+
 int main(){
     UNITY_BEGIN();
     RUN_TEST(test_handle_name_request);
+    RUN_TEST(test_handle_msg_request);
     return UNITY_END();
 }

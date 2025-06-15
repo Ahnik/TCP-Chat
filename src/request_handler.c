@@ -35,7 +35,7 @@ void handle_name_request(int client_socket, const Request *request){
     // Change the name of the client 
     snprintf(client->username, MAX_USERNAME_LEN, "%s", request->message);
 
-    // Prepare response for the client
+    // Prepare the acknowledgement response for the client
     response->type = RESPONSE_ACK;
     response->status = STATUS_ACK_NAME_SET;
 
@@ -66,7 +66,7 @@ void handle_name_request(int client_socket, const Request *request){
         return;
     }
 
-    // Prepare response  to be broadcasted to all clients
+    // Prepare the information response  to be broadcasted to all clients
     response->type = RESPONSE_INFO;
     response->status = STATUS_INFO_NAME_CHANGED;
     snprintf(response->message, MAX_MESSAGE_SIZE, "--%s has changed their name to %s--", prev_name, client->username);
@@ -118,7 +118,7 @@ void handle_msg_request(int client_socket, const Request *request){
         return;
     }
 
-    // Prepare the response for the client
+    // Prepare the acknowledgement response for the client
     response->type = RESPONSE_ACK;
     response->status = STATUS_ACK_OK;
 
@@ -149,11 +149,11 @@ void handle_msg_request(int client_socket, const Request *request){
         return;
     }
 
-    // Prepare the message to be sent 
+    // Prepare the message to be sent to all the clients
     char response_message[MAX_MESSAGE_SIZE];
     snprintf(response_message, MAX_MESSAGE_SIZE, "%s: %s", request->username, request->message);
 
-    // Prepare the response to be broadcasted to all clients
+    // Prepare the information response to be broadcasted to all clients
     response->type = RESPONSE_INFO;
     response->status = STATUS_INFO_MESSAGE;
     snprintf(response->message, MAX_MESSAGE_SIZE, "%s", response_message);
