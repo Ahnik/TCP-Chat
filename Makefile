@@ -78,7 +78,7 @@ test_request_handler: $(TEST_REQUEST_HANDLER_BIN)
 	@$(TEST_REQUEST_HANDLER_BIN)
 
 # === Run all tests ===
-test: test_message test_net test_protocol test_clients
+test: test_message test_net test_protocol test_clients test_request_handler
 
 # === Build only app binaries ===
 $(SERVER_BIN): $(SERVER_SRC) | bin_dir

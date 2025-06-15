@@ -76,6 +76,8 @@ void handle_client(int client_socket){
             fflush(stderr);
             free(payload_buffer);
             free(request);
+            if(error == ERR_INVALID)     send_error_to_client(client_socket, STATUS_ERR_INVALID_CMD);
+            else if(error == ERR_MEMORY) send_error_to_client(client_socket, STATUS_ERR_SERVER_ERROR);
             continue;
         }
 
@@ -95,7 +97,7 @@ void handle_client(int client_socket){
                 leave = true;
                 break;
             default:
-                handle_invalid_request(client_socket);
+                send_error_to_client(client_socket, STATUS_ERR_INVALID_CMD);
                 break;
         }
 

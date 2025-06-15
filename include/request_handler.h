@@ -16,6 +16,6 @@ void handle_join_request(int client_socket, const Request *request);
 void handle_leave_request(int client_socket, const Request *request);
 
 // Function to handle invalid requests
-void handle_invalid_request(int client_socket);
+void send_error_to_client(int client_socket, ResponseStatus status);
 
 #endif
