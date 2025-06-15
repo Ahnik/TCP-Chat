@@ -16,7 +16,7 @@ CLIENT_HANDLER = $(SRC_DIR)/client_handler.c
 REQUEST_HANDLER = $(SRC_DIR)/request_handler.c 
 
 # === APP SOURCES ===
-SERVER_SRC = $(SRC_DIR)/chat_server.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL) $(CLIENTS)
+SERVER_SRC = $(SRC_DIR)/chat_server.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL) $(CLIENTS) $(REQUEST_HANDLER) $(CLIENT_HANDLER)
 CLIENT_SRC = $(SRC_DIR)/chat_client.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL)
 
 # === TEST SOURCES ===

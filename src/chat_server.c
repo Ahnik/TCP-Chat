@@ -7,12 +7,13 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <errno.h>
  
 // Declaring the pool of thread slots to handle the clients
 static ThreadSlot *thread_slots[MAX_CLIENTS];
 
-int main(int argc, char **argv){
+int main(){
     // Spawning the threads
     for(int i=0; i<MAX_CLIENTS; i++){
         // Allocate memory for the thread slots

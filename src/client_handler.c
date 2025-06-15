@@ -8,13 +8,14 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 void *thread_function(void *arg){
     ThreadSlot *thread_slot = (ThreadSlot *)arg;
     while(true){
         pthread_mutex_lock(&thread_slot->lock);
         if(thread_slot->in_use == false){
-            pthread_cond_wait(&thread_slot->cond, &thread_slot->lock);
+            pthread_cond_wait(&thread_slot->cond, &thread_slot->lock);  /* Data race condition here */
             if(thread_slot->in_use && thread_slot->socketfd != -1){
                 handle_client(thread_slot->socketfd);
                 thread_slot->in_use = false;
@@ -49,7 +50,7 @@ void handle_client(int client_socket){
         int error;
         if((error = recv_all(client_socket, payload_buffer, payload_length)) != ERR_OK){
             fprintf(stderr, "Receiving from client failed!\n");
-            fprintf(stderr, error_to_string(error));
+            fprintf(stderr, "%s", error_to_string(error));
             fprintf(stderr, "\n");
             fflush(stderr);
             free(payload_buffer);
@@ -69,9 +70,9 @@ void handle_client(int client_socket){
         }
 
         // Decode the request 
-        if((error = decode_request(request, payload_buffer)) != ERR_OK){
+        if((error = decode_request(request, (char *)payload_buffer)) != ERR_OK){
             fprintf(stderr, "Decoding reqeust error!\n");
-            fprintf(stderr, error_to_string(error));
+            fprintf(stderr, "%s", error_to_string(error));
             fprintf(stderr, "\n");
             fflush(stderr);
             free(payload_buffer);
