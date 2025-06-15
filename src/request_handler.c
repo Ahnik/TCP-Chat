@@ -11,6 +11,7 @@
 #include <errno.h>
 
 void handle_name_request(int client_socket, const Request *request){
+    // Find the client sending the request
     Client *client = find_client_by_socket(client_socket);
     if(client == NULL){
         fprintf(stderr, "Unable to find client!\n");
@@ -18,6 +19,7 @@ void handle_name_request(int client_socket, const Request *request){
         return;
     }
 
+    // Allocate memory for the response
     Response *response = (Response *)malloc(sizeof(*response));
     if(response == NULL){
         fprintf(stderr, "Memory allocation for response failed!\n");
@@ -97,11 +99,94 @@ void handle_name_request(int client_socket, const Request *request){
     // Free up dynamically allocated memory
     free(response);
 }
-/*
+
 void handle_msg_request(int client_socket, const Request *request){
+    // Find the client sending the request
+    Client *client = find_client_by_socket(client_socket);
+    if(client == NULL){
+        fprintf(stderr, "Unable to find client!\n");
+        fflush(stderr);
+        return;
+    }
 
+    // Allocate memory for the response
+    Response *response = (Response *)malloc(sizeof(*response));
+    if(response == NULL){
+        fprintf(stderr, "Memory allocation for response failed!\n");
+        fprintf(stderr, "(error = %d) : %s\n", errno, strerror(errno));
+        fflush(stderr);
+        return;
+    }
+
+    // Prepare the response for the client
+    response->type = RESPONSE_ACK;
+    response->status = STATUS_ACK_OK;
+
+    // Prepare the message buffer to be sent to the client
+    uint32_t length = response_length(response);
+    uint8_t response_buffer[MAX_PAYLOAD_SIZE];
+    bzero(response_buffer, MAX_PAYLOAD_SIZE);
+    uint8_t *ptr = response_buffer;     // Pointer to the first element of the buffer
+
+    // Encode the response into the response buffer
+    int error;
+    if((error = encode_response(&ptr, MAX_PAYLOAD_SIZE, length, response)) != ERR_OK){
+        fprintf(stderr, "Response encoding error!\n");
+        fprintf(stderr, "%s", error_to_string(error));
+        fprintf(stderr, "\n");
+        fflush(stderr);
+        free(response);
+        return;
+    }
+
+    // Send the message to the client
+    if((error = send_all(client_socket, response_buffer, length + HEADER_SIZE)) != ERR_OK){
+        fprintf(stderr, "Response sending error!\n");
+        fprintf(stderr, "%s", error_to_string(error));
+        fprintf(stderr, "\n");
+        fflush(stderr);
+        free(response);
+        return;
+    }
+
+    // Prepare the message to be sent 
+    char response_message[MAX_MESSAGE_SIZE];
+    snprintf(response_message, MAX_MESSAGE_SIZE, "%s: %s", request->username, request->message);
+
+    // Prepare the response to be broadcasted to all clients
+    response->type = RESPONSE_INFO;
+    response->status = STATUS_INFO_MESSAGE;
+    snprintf(response->message, MAX_MESSAGE_SIZE, "%s", response_message);
+
+    // Clear the response buffer and update the length
+    bzero(response_buffer, MAX_PAYLOAD_SIZE);
+    ptr = response_buffer;
+    length = response_length(response);
+
+    // Encode the response into the response buffer
+    if((error = encode_response(&ptr, MAX_PAYLOAD_SIZE, length, response)) != ERR_OK){
+        fprintf(stderr, "Response encoding error!\n");
+        fprintf(stderr, "%s", error_to_string(error));
+        fprintf(stderr, "\n");
+        fflush(stderr);
+        free(response);
+        return;
+    }
+
+    // Send the response to all the clients
+    if((error = broadcast_message(response_buffer, length + HEADER_SIZE)) != ERR_OK){
+        fprintf(stderr, "Unable to send all messages\n");
+        fprintf(stderr, "%s", error_to_string(error));
+        fprintf(stderr, "\n");
+        fflush(stderr);
+        free(response);
+        return;
+    }
+
+    // Free up dynamically allocated memory
+    free(response);
 }
-
+/*
 void handle_join_request(int client_socket, const Request *request){
 
 }
