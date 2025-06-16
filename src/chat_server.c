@@ -20,12 +20,13 @@ int main(){
         if((thread_slots[i] = (ThreadSlot *)malloc(sizeof(ThreadSlot))) == NULL)
             exit_with_error("Unable to allocate memory for threads!");
 
-        pthread_create(&thread_slots[i]->thread, NULL, thread_function, (void *)thread_slots[i]);
+        // Fill in the attributes of the thread slots, initialize the mutex locks and condition variables and create the threads
         thread_slots[i]->in_use = false;
         thread_slots[i]->id = i;
         thread_slots[i]->socketfd = -1;
         pthread_mutex_init(&thread_slots[i]->lock, NULL);
         pthread_cond_init(&thread_slots[i]->cond, NULL);
+        pthread_create(&thread_slots[i]->thread, NULL, thread_function, (void *)thread_slots[i]);
     }
 
     // Create the server socket
