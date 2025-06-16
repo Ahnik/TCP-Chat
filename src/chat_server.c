@@ -34,13 +34,13 @@ int main(){
         exit_with_error("Failed to create socket!");
     
     // Initialize the address struct
-    struct sockaddr_in server_addr;
+    struct sockaddr_in server_addr; /* struct sockaddr_in OR struct sockaddr */
     server_addr.sin_family      = AF_INET;
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     server_addr.sin_port        = htons(SERVER_PORT);
 
     // Bind the server address to the server socket
-    if(bind(server_socket, &server_addr, sizeof(server_addr)) < 0)
+    if(bind(server_socket, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
         exit_with_error("Bind Failed!");
 
     // Mark the server socket as a passive socket that will listen for incoming transmissions
@@ -54,7 +54,7 @@ int main(){
         socklen_t addr_size = (socklen_t)sizeof(struct sockaddr_in);
 
         // Accept the client
-        client_socket = accept(server_socket, &client_addr, &addr_size);
+        client_socket = accept(server_socket, (struct sockaddr *)&client_addr, &addr_size);
         if(client_socket < 0){
             fprintf(stderr, "Accept Failed!\n");
             fprintf(stderr, "(errno = %d) : %s\n", errno, strerror(errno));

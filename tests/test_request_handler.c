@@ -147,9 +147,62 @@ void test_handle_msg_request(){
     }
 }
 
+void test_handle_join_request(){
+    int socket_pairs[MAX_CLIENTS][2];   
+    for(int i=0; i<MAX_CLIENTS; i++){
+        if(socketpair(AF_UNIX, SOCK_STREAM, 0, socket_pairs[i]) != 0) TEST_IGNORE();
+    }
+
+    char name[2] = "a";
+    for(int i=0; i<MAX_CLIENTS; i++){
+        Request *request = (Request *)malloc(sizeof(*request));
+        request->type = REQUEST_JOIN;
+        snprintf(request->username, MAX_USERNAME_LEN, "%s", name);
+
+        handle_join_request(socket_pairs[i][0], request);
+
+        char response_buffer[MAX_PAYLOAD_SIZE];
+        bzero(response_buffer, MAX_PAYLOAD_SIZE);
+
+        uint32_t length = read_payload_len(socket_pairs[i][1]);
+        TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen("ACK|JOINED")), length);
+        TEST_ASSERT_EQUAL_INT(ERR_OK, recv_all(socket_pairs[i][1], (uint8_t *)response_buffer, length));
+        response_buffer[length] = 0;
+        TEST_ASSERT_EQUAL_STRING("ACK|JOINED", response_buffer);
+
+        Response *response = (Response *)malloc(sizeof(*response));
+        TEST_ASSERT_EQUAL_INT(ERR_OK, decode_response(response, response_buffer));
+        TEST_ASSERT_EQUAL(RESPONSE_ACK, response->type);
+        TEST_ASSERT_EQUAL(STATUS_ACK_JOINED, response->status);
+
+        for(int j=0; j<=i; j++){
+            bzero(response_buffer, MAX_PAYLOAD_SIZE);
+            bzero(response, sizeof(*response));
+
+            char payload[MAX_PAYLOAD_SIZE];
+            snprintf(payload, MAX_PAYLOAD_SIZE, "INFO|USER_JOINED|--%s has joined--", name);
+
+            length = read_payload_len(socket_pairs[j][1]);
+            //TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen(payload)), length);
+            TEST_ASSERT_EQUAL_INT(ERR_OK, recv_all(socket_pairs[j][1], (uint8_t *)response_buffer, length));
+            response_buffer[length] = 0;
+            TEST_ASSERT_EQUAL_STRING(payload, response_buffer);
+
+            TEST_ASSERT_EQUAL_INT(ERR_OK, decode_response(response, response_buffer));
+            TEST_ASSERT_EQUAL(RESPONSE_INFO, response->type);
+            TEST_ASSERT_EQUAL(STATUS_INFO_USER_JOINED, response->status);
+        }
+
+        free(response);
+        free(request);
+        name[0]++;
+    }
+}
+
 int main(){
     UNITY_BEGIN();
     RUN_TEST(test_handle_name_request);
     RUN_TEST(test_handle_msg_request);
+    RUN_TEST(test_handle_join_request);
     return UNITY_END();
 }
