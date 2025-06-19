@@ -94,8 +94,8 @@ clean:
 	rm -rf $(BIN_DIR)
 
 # === Optional: run the server and client ===
-run-server: $(SERVER_BIN)
+server: $(SERVER_BIN)
 	@$(SERVER_BIN)
 
-run-client: $(CLIENT_BIN)
+client: $(CLIENT_BIN)
 	@$(CLIENT_BIN)

@@ -1,4 +1,5 @@
 #include "client_handler.h"
+#include "request_handler.h"
 #include "common.h"
 #include <sys/socket.h>
 #include <unistd.h>
@@ -80,13 +81,9 @@ int main(){
             pthread_mutex_unlock(&thread_slots[i]->lock);
         }
 
-        if(slot_available){
-            char message[29] = "You have successfully joined\n";
-            send(client_socket, message, sizeof(message), 0);
-        }else{
-            // If no available thread slot is found, return error to the client and then close the client socket
-            char message[24] = "The chat server is full\n";
-            send(client_socket, message, sizeof(message), 0);
+        if(!slot_available){
+            // If no thread slot is available, send error code to the client that the chat server is full
+            send_error_to_client(client_socket, STATUS_ERR_SERVER_FULL);
             close(client_socket);
         }
     }

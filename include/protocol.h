@@ -32,6 +32,7 @@ typedef enum{
     STATUS_ERR_NAME_TAKEN,
     STATUS_ERR_NAME_MISSING,
     STATUS_ERR_NOT_LOGGED_IN,
+    STATUS_ERR_SERVER_FULL,
     STATUS_ERR_SERVER_ERROR,
 
     // Status for INFO responses
