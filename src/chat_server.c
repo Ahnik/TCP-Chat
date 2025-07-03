@@ -37,6 +37,7 @@ int main(){
     
     // Initialize the address struct
     struct sockaddr_in server_addr; /* struct sockaddr_in OR struct sockaddr */
+    memset((void *)&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family      = AF_INET;
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     server_addr.sin_port        = htons(SERVER_PORT);

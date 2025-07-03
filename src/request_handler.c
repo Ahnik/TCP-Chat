@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include <strings.h>
 #include <errno.h>
 
 void handle_name_request(int client_socket, const Request *request){
@@ -43,7 +42,7 @@ void handle_name_request(int client_socket, const Request *request){
     // Prepare the message buffer to be sent to the client
     uint32_t length = response_length(response);
     uint8_t response_buffer[MAX_PAYLOAD_SIZE];
-    bzero(response_buffer, MAX_PAYLOAD_SIZE);
+    memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
     uint8_t *ptr = response_buffer;     // Pointer to the first element of the buffer
 
     // Encode the response into the response buffer
@@ -73,7 +72,7 @@ void handle_name_request(int client_socket, const Request *request){
     snprintf(response->message, MAX_MESSAGE_SIZE, "--%s has changed their name to %s--", prev_name, client->username);
 
     // Clear the response buffer and update the length
-    bzero(response_buffer, MAX_PAYLOAD_SIZE);
+    memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
     ptr = response_buffer;
     length = response_length(response);
 
@@ -127,7 +126,7 @@ void handle_msg_request(int client_socket, const Request *request){
     // Prepare the message buffer to be sent to the client
     uint32_t length = response_length(response);
     uint8_t response_buffer[MAX_PAYLOAD_SIZE];
-    bzero(response_buffer, MAX_PAYLOAD_SIZE);
+    memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
     uint8_t *ptr = response_buffer;     // Pointer to the first element of the buffer
 
     // Encode the response into the response buffer
@@ -161,7 +160,7 @@ void handle_msg_request(int client_socket, const Request *request){
     snprintf(response->message, MAX_MESSAGE_SIZE, "%s", response_message);
 
     // Clear the response buffer and update the length
-    bzero(response_buffer, MAX_PAYLOAD_SIZE);
+    memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
     ptr = response_buffer;
     length = response_length(response);
 
@@ -224,7 +223,7 @@ void handle_join_request(int client_socket, const Request *request){
     // Prepare the message buffer to be sent to the client
     uint32_t length = response_length(response);
     uint8_t response_buffer[MAX_PAYLOAD_SIZE];
-    bzero(response_buffer, MAX_PAYLOAD_SIZE);
+    memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
     uint8_t *ptr = response_buffer;     // Pointer to the first element of the buffer
 
     // Encode the response into the response buffer
@@ -257,7 +256,7 @@ void handle_join_request(int client_socket, const Request *request){
     snprintf(response->message, MAX_MESSAGE_SIZE, "%s", response_message);
 
     // Clear the response buffer and update the length
-    bzero(response_buffer, MAX_PAYLOAD_SIZE);
+    memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
     ptr = response_buffer;
     length = response_length(response);
 
@@ -311,7 +310,7 @@ void handle_leave_request(int client_socket, const Request *request){
     // Prepare the message buffer to be sent to the client
     uint32_t length = response_length(response);
     uint8_t response_buffer[MAX_PAYLOAD_SIZE];
-    bzero(response_buffer, MAX_PAYLOAD_SIZE);
+    memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
     uint8_t *ptr = response_buffer;     // Pointer to the first element of the buffer
 
     // Encode the response into the response buffer
@@ -356,7 +355,7 @@ void handle_leave_request(int client_socket, const Request *request){
     snprintf(response->message, MAX_MESSAGE_SIZE, "%s", response_message);
 
     // Clear the response buffer and update the length
-    bzero(response_buffer, MAX_PAYLOAD_SIZE);
+    memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
     ptr = response_buffer;
     length = response_length(response);
 
@@ -401,7 +400,7 @@ void send_error_to_client(int client_socket, ResponseStatus status){
     // Prepare the message buffer to be sent to the client
     uint32_t length = response_length(response);
     uint8_t response_buffer[MAX_PAYLOAD_SIZE];
-    bzero(response_buffer, MAX_PAYLOAD_SIZE);
+    memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
     uint8_t *ptr = response_buffer;     // Pointer to the first element of the buffer
 
     // Encode the response into the response buffer

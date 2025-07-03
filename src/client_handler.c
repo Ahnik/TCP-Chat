@@ -15,7 +15,7 @@ void *thread_function(void *arg){
     while(true){
         pthread_mutex_lock(&thread_slot->lock);
         if(thread_slot->in_use == false){
-            pthread_cond_wait(&thread_slot->cond, &thread_slot->lock);  /* Data race condition here */
+            pthread_cond_wait(&thread_slot->cond, &thread_slot->lock);  
             if(thread_slot->in_use && thread_slot->socketfd != -1){
                 handle_client(thread_slot->socketfd);
                 thread_slot->in_use = false;
