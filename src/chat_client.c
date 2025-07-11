@@ -1,6 +1,7 @@
 #include "common.h"
 #include "protocol.h"
 #include "message.h"
+#include "client_threads.h"
 #include <sys/socket.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,6 +9,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <arpa/inet.h>
+
+// Mutex lock and condition variable
+static pthread_mutex_t lock;
+static pthread_cond_t condition_var;
 
 int main(int argc, char **argv){
     // Usage check
@@ -32,5 +37,25 @@ int main(int argc, char **argv){
     if(connect(client_socket, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
         exit_with_error("Connection failed!");
 
+    // Initialize the mutex lock and conditional variable
+    pthread_mutex_init(&lock, NULL);
+    pthread_cond_init(&condition_var, NULL);
+
+    // Initialize the input and output threads
+    pthread_t input_thread, output_thread;
+
+    // Create the input and output threads
+    pthread_create(&input_thread , NULL, input_thread_function , NULL);
+    pthread_create(&output_thread, NULL, output_thread_function, NULL);
+
+    // Terminate the input and output threads
+    pthread_join(input_thread , NULL);
+    pthread_join(output_thread, NULL);
+
+    // Destroy the mutex lock and conditional variable
+    pthread_mutex_destroy(&lock);
+    pthread_cond_destroy(&condition_var);
+
+    close(client_socket);
     return 0;
 }
