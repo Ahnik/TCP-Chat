@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <arpa/inet.h>
+#include <errno.h>
 
 int main(int argc, char **argv){
     // Usage check
@@ -19,7 +20,7 @@ int main(int argc, char **argv){
 
     // Initialize and fill up the server address struct
     struct sockaddr_in server_addr;
-    memset((void *)&server_addr, 0, sizeof(server_addr));
+    memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_port   = htons(SERVER_PORT);
 
@@ -39,6 +40,16 @@ int main(int argc, char **argv){
     printf("Enter your name: ");
     if(fgets(username, MAX_USERNAME_SIZE, stdin) == NULL)
         exit_with_error("Input name error!");
+
+    // Send JOIN request to the server
+    Request *request = (Request *)malloc(sizeof(*request));
+    if(request == NULL)
+        exit_with_error("Memory allocation for request failed!");
+    
+    snprintf(request->username, MAX_USERNAME_SIZE, "%s", username);
+    request->type = REQUEST_JOIN;
+    uint32_t length = request_length(request);
+
 
     close(client_socket);
     return 0;

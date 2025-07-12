@@ -1,5 +1,6 @@
 #include "client_handler.h"
 #include "request_handler.h"
+#include "send_response.h"
 #include "common.h"
 #include <sys/socket.h>
 #include <unistd.h>

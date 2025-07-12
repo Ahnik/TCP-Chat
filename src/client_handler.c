@@ -1,5 +1,6 @@
 #include "client_handler.h"
 #include "request_handler.h"
+#include "send_response.h"
 #include "net.h"
 #include "message.h"
 #include "protocol.h"
