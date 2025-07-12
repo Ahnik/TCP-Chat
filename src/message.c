@@ -70,13 +70,13 @@ int decode_request(Request *request, const char *payload){
         free(payload_duplicate);
         return ERR_INVALID;
     }
-    if(strlen(payload_token) > MAX_USERNAME_LEN){
+    if(strlen(payload_token) >= MAX_USERNAME_SIZE){
         free(payload_duplicate);
         return ERR_BUFFER_SIZE_EXCEEDED;
     }
 
     // The second token is the username of the client sending the request
-    snprintf(request->username, MAX_USERNAME_LEN, "%s", payload_token);
+    snprintf(request->username, MAX_USERNAME_SIZE, "%s", payload_token);
 
     // In case of MSG and NAME requests, the third token will be the message
     if((request->type == REQUEST_MSG) || (request->type == REQUEST_NAME)){

@@ -29,11 +29,11 @@ void handle_name_request(int client_socket, const Request *request){
     }
 
     // Store the previous username of the client 
-    char prev_name[MAX_USERNAME_LEN];
-    snprintf(prev_name, MAX_USERNAME_LEN, "%s", client->username);
+    char prev_name[MAX_USERNAME_SIZE];
+    snprintf(prev_name, MAX_USERNAME_SIZE, "%s", client->username);
 
     // Change the name of the client 
-    snprintf(client->username, MAX_USERNAME_LEN, "%s", request->message);
+    snprintf(client->username, MAX_USERNAME_SIZE, "%s", request->message);
 
     // Prepare the acknowledgement response for the client
     response->type = RESPONSE_ACK;

@@ -36,11 +36,11 @@ void test_handle_name_request(){
         Client *client = find_client_by_socket(socket_pairs[i][0]);
         if(client == NULL) TEST_IGNORE();
 
-        char prev_name[MAX_USERNAME_LEN];
-        snprintf(prev_name, MAX_USERNAME_LEN, "%s", client->username);
+        char prev_name[MAX_USERNAME_SIZE];
+        snprintf(prev_name, MAX_USERNAME_SIZE, "%s", client->username);
 
         request->type = REQUEST_NAME;
-        snprintf(request->username, MAX_USERNAME_LEN, "%s", client->username);
+        snprintf(request->username, MAX_USERNAME_SIZE, "%s", client->username);
         snprintf(request->message, MAX_MESSAGE_SIZE, "%s", name);
 
         handle_name_request(socket_pairs[i][0], request);
@@ -105,7 +105,7 @@ void test_handle_msg_request(){
         if(client == NULL) TEST_IGNORE();
 
         request->type = REQUEST_MSG;
-        snprintf(request->username, MAX_USERNAME_LEN, "%s", client->username);
+        snprintf(request->username, MAX_USERNAME_SIZE, "%s", client->username);
         snprintf(request->message, MAX_MESSAGE_SIZE, "%s", msg);
 
         handle_msg_request(socket_pairs[i][0], request);
@@ -157,7 +157,7 @@ void test_handle_join_request(){
     for(int i=0; i<MAX_CLIENTS; i++){
         Request *request = (Request *)malloc(sizeof(*request));
         request->type = REQUEST_JOIN;
-        snprintf(request->username, MAX_USERNAME_LEN, "%s", name);
+        snprintf(request->username, MAX_USERNAME_SIZE, "%s", name);
 
         handle_join_request(socket_pairs[i][0], request);
 

@@ -8,7 +8,7 @@
 // The client data includes the client username and their socket file descriptor through which the server communicates with them 
 typedef struct client{
     int socketfd;
-    char username[MAX_USERNAME_LEN];
+    char username[MAX_USERNAME_SIZE];
     struct client *next;
 } Client;
 

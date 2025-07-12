@@ -35,6 +35,7 @@ void handle_client(int client_socket){
         if(payload_length == 0){
             fprintf(stderr, "Reading request length failed!\n");
             fflush(stderr);
+            send_error_to_client(client_socket, STATUS_ERR_SERVER_ERROR);
             continue;
         }
 
@@ -43,6 +44,7 @@ void handle_client(int client_socket){
         if(payload_buffer == NULL){
             fprintf(stderr, "Memory allocation for payload buffer failed!\n");
             fflush(stderr);
+            send_error_to_client(client_socket, STATUS_ERR_SERVER_ERROR);
             continue;
         }
 
@@ -54,6 +56,7 @@ void handle_client(int client_socket){
             fprintf(stderr, "\n");
             fflush(stderr);
             free(payload_buffer);
+            send_error_to_client(client_socket, STATUS_ERR_SERVER_ERROR);
             continue;
         }
 
@@ -66,6 +69,7 @@ void handle_client(int client_socket){
             fprintf(stderr, "Memory allocation for request failed!\n");
             fflush(stderr);
             free(payload_buffer);
+            send_error_to_client(client_socket, STATUS_ERR_SERVER_ERROR);
             continue;
         }
 

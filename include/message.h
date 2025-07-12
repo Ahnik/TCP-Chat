@@ -13,7 +13,7 @@
 // Request structure
 typedef struct{
     RequestType type;
-    char username[MAX_USERNAME_LEN];
+    char username[MAX_USERNAME_SIZE];
     char message[MAX_MESSAGE_SIZE]; 
 } Request;
 
