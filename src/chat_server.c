@@ -78,6 +78,8 @@ int main(){
                 thread_slots[i]->socketfd = client_socket;
                 pthread_cond_signal(&thread_slots[i]->cond);
                 pthread_mutex_unlock(&thread_slots[i]->lock);
+                // Send an acknowledgement response to the client to signal that they are connected
+                send_response_to_client(client_socket, RESPONSE_ACK, STATUS_ACK_OK, "");
                 break;
             }
             pthread_mutex_unlock(&thread_slots[i]->lock);
