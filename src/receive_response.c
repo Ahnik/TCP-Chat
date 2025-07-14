@@ -9,10 +9,12 @@
 Response *receive_response(int socketfd){
     // Receive the length of the payload
     uint32_t payload_length = read_payload_len(socketfd);
-    if(payload_length == 0){
+    if(payload_length == UINT32_MAX){
         fprintf(stderr, "Reading response length failed!\n");
         fflush(stderr);
         return NULL;
+    }else if(payload_length == 0){
+        /* TODO: Write logic to handle server disconnect */
     }
 
     // Create the payload buffer to store the incoming client request

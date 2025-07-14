@@ -33,11 +33,13 @@ void handle_client(int client_socket){
     while(leave){
         // Read the payload length from the client
         uint32_t payload_length = read_payload_len(client_socket);
-        if(payload_length == 0){
+        if(payload_length == UINT32_MAX){
             fprintf(stderr, "Reading request length failed!\n");
             fflush(stderr);
             send_error_to_client(client_socket, STATUS_ERR_SERVER_ERROR);
             continue;
+        }else if(payload_length == 0){
+            /* TODO: Write logic to handle client disconnections */
         }
 
         // Creating the payload buffer to store the incoming client request

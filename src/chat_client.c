@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <pthread.h>
 #include <unistd.h>
 #include <string.h>
@@ -39,18 +40,24 @@ int main(int argc, char **argv){
 
     // Receive the acknowledgement or error response from the server
     Response *response = receive_response(server_socket);
-    if(response == NULL)
+    if(response == NULL){
         exit_with_error("Client error!");
+        close(server_socket);
+    }
     
     // If the response is an error response, exit 
     if(response->type == RESPONSE_ERR && response->status == STATUS_ERR_SERVER_FULL){
-        printf("Server is full!\n");
+        fprintf(stderr, "Server is full!\n");
+        fflush(stderr);
         free(response);
+        close(server_socket);
         exit(0);
     }   // The server response is invalid
     else if(response->type != RESPONSE_ACK || response->status != STATUS_ACK_OK){
-        printf("Invalid response from server!\n");
+        fprintf(stderr, "Invalid response from server!\n");
+        fflush(stderr);
         free(response);
+        close(server_socket);
         exit(0);
     }
     free(response);
@@ -59,14 +66,50 @@ int main(int argc, char **argv){
     // Variable to store username
     char username[MAX_USERNAME_SIZE];
 
-    // Clear the screen and take username as input
+    // Clear the screen 
     printf("\033[H\033[J");
-    printf("Enter your name: ");
-    if(fgets(username, MAX_USERNAME_SIZE, stdin) == NULL)
-        exit_with_error("Input name error!");
 
-    // Send JOIN request to the server
-    send_request(server_socket, REQUEST_JOIN, username, "");
+    // Until the user fills in valid name that is not taken, the loop will keep going on
+    while(true){
+        // Enter the name
+        printf("Enter your name: ");
+        if(fgets(username, MAX_USERNAME_SIZE, stdin) == NULL){
+            exit_with_error("Input name error!");
+            close(server_socket);
+        }
+
+        // Send JOIN request to the server
+        send_request(server_socket, REQUEST_JOIN, username, "");
+
+        // Receive the response
+        response = receive_response(server_socket);
+        if(response == NULL){
+            exit_with_error("Client error!");
+            close(server_socket);
+        }
+        
+        // Process the response
+        if(response->type == RESPONSE_ACK && response->status == STATUS_ACK_JOINED){
+            break;
+        }else if(response->type == RESPONSE_ERR && response->status == STATUS_ERR_NAME_TAKEN){
+            fprintf(stderr, "Name is already taken. Choose a different name.\n");
+            fflush(stderr);
+            free(response);
+            response = NULL;
+        }else if(response->type == RESPONSE_ERR && response->status == STATUS_ERR_SERVER_ERROR){
+            fprintf(stderr, "Internal server error!\n");
+            fflush(stderr);
+            free(response);
+            close(server_socket);
+            exit(0);
+        }else{
+            fprintf(stderr, "Invalid response from server!\n");
+            fflush(stderr);
+            free(response);
+            close(server_socket);
+            exit(0);
+        }
+    }
 
     close(server_socket);
     return 0;

@@ -31,6 +31,7 @@ const char *error_to_string(int error){
         case ERR_INVALID:              return "Bad arguments";
         case ERR_BUFFER_SIZE_EXCEEDED: return "Buffer size exceeded";
         case ERR_RECEIVING:            return "Receiving error";
+        case ERR_CONNECTION_CLOSED:    return "Connection has been closed";
         default:                       return "Unknown error";
     }
 }

@@ -15,6 +15,7 @@
 #define ERR_NOT_FOUND            -3
 #define ERR_BUFFER_SIZE_EXCEEDED -4
 #define ERR_RECEIVING            -5
+#define ERR_CONNECTION_CLOSED    -6
 
 // Server port
 #define SERVER_PORT 4221
