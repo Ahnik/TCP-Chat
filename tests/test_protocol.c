@@ -13,21 +13,22 @@ struct StatusEntry{
 };
 
 static const struct StatusEntry status_table[] = {
-    {"OK"             , STATUS_ACK_OK},
-    {"NAME_SET"       , STATUS_ACK_NAME_SET},
-    {"JOINED"         , STATUS_ACK_JOINED},
-    {"QUIT"           , STATUS_ACK_QUIT},
-    {"INVALID_CMD"    , STATUS_ERR_INVALID_CMD},
-    {"MALFORMED"      , STATUS_ERR_MALFORMED},
-    {"NAME_MISSING"   , STATUS_ERR_NAME_MISSING},
-    {"NAME_TAKEN"     , STATUS_ERR_NAME_TAKEN},
-    {"NOT_LOGGED_IN"  , STATUS_ERR_NOT_LOGGED_IN},
-    {"SERVER_FULL"    , STATUS_ERR_SERVER_FULL},
-    {"SERVER_ERROR"   , STATUS_ERR_SERVER_ERROR},
-    {"USER_JOINED"    , STATUS_INFO_USER_JOINED},
-    {"USER_LEFT"      , STATUS_INFO_USER_LEFT},
-    {"MESSAGE"        , STATUS_INFO_MESSAGE},
-    {"SERVER_SHUTDOWN", STATUS_INFO_SERVER_SHUTDOWN}
+    {"OK"                 , STATUS_ACK_OK},
+    {"NAME_SET"           , STATUS_ACK_NAME_SET},
+    {"JOINED"             , STATUS_ACK_JOINED},
+    {"QUIT"               , STATUS_ACK_QUIT},
+    {"INVALID_CMD"        , STATUS_ERR_INVALID_CMD},
+    {"MALFORMED"          , STATUS_ERR_MALFORMED},
+    {"NAME_MISSING"       , STATUS_ERR_NAME_MISSING},
+    {"NAME_TAKEN"         , STATUS_ERR_NAME_TAKEN},
+    {"NOT_LOGGED_IN"      , STATUS_ERR_NOT_LOGGED_IN},
+    {"SERVER_FULL"        , STATUS_ERR_SERVER_FULL},
+    {"SERVER_ERROR"       , STATUS_ERR_SERVER_ERROR},
+    {"USER_JOINED"        , STATUS_INFO_USER_JOINED},
+    {"USER_LEFT"          , STATUS_INFO_USER_LEFT},
+    {"MESSAGE"            , STATUS_INFO_MESSAGE},
+    {"SERVER_SHUTDOWN"    , STATUS_INFO_SERVER_SHUTDOWN},
+    {"CLIENT_DISCONNECTED", STATUS_INFO_CLIENT_DISCONNECTED}
 };
 
 void test_parse_request_type(){

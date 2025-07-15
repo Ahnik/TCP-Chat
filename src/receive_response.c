@@ -14,7 +14,9 @@ Response *receive_response(int socketfd){
         fflush(stderr);
         return NULL;
     }else if(payload_length == 0){
-        /* TODO: Write logic to handle server disconnect */
+        fprintf(stderr, "Server disconnected!\n");
+        fflush(stderr);
+        return NULL;
     }
 
     // Create the payload buffer to store the incoming client request

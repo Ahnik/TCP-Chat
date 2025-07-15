@@ -1,6 +1,7 @@
 #include "client_handler.h"
 #include "request_handler.h"
 #include "send_response.h"
+#include "clients.h"
 #include "net.h"
 #include "message.h"
 #include "protocol.h"
@@ -31,6 +32,7 @@ void *thread_function(void *arg){
 void handle_client(int client_socket){
     bool leave = false; // Boolean variable to determine if the client wants to leave or not
     while(leave){
+        int error;
         // Read the payload length from the client
         uint32_t payload_length = read_payload_len(client_socket);
         if(payload_length == UINT32_MAX){
@@ -39,7 +41,20 @@ void handle_client(int client_socket){
             send_error_to_client(client_socket, STATUS_ERR_SERVER_ERROR);
             continue;
         }else if(payload_length == 0){
-            /* TODO: Write logic to handle client disconnections */
+            // The client has disconnected
+            Client *client;
+            // If the client exists in the client list, remove them
+            if((client = find_client_by_socket(client_socket)) != NULL){
+                if((error = remove_client(client_socket)) != ERR_OK)
+                    exit_with_error("Error with client list! Shutting down!");
+
+                // Broadcast the response to all the connected clients
+                char message[MAX_MESSAGE_SIZE];
+                snprintf(message, MAX_MESSAGE_SIZE, "--%s has disconnected--", client->username);
+                broadcast_response(RESPONSE_INFO, STATUS_INFO_CLIENT_DISCONNECTED, message);
+            }
+            leave = true;
+            continue;
         }
 
         // Creating the payload buffer to store the incoming client request
@@ -52,7 +67,6 @@ void handle_client(int client_socket){
         }
 
         // Receiving the client request 
-        int error;
         if((error = recv_all(client_socket, payload_buffer, payload_length)) != ERR_OK){
             fprintf(stderr, "Receiving from client failed!\n");
             fprintf(stderr, "%s", error_to_string(error));

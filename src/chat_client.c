@@ -41,8 +41,8 @@ int main(int argc, char **argv){
     // Receive the acknowledgement or error response from the server
     Response *response = receive_response(server_socket);
     if(response == NULL){
-        exit_with_error("Client error!");
         close(server_socket);
+        exit(0);
     }
     
     // If the response is an error response, exit 
@@ -84,8 +84,8 @@ int main(int argc, char **argv){
         // Receive the response
         response = receive_response(server_socket);
         if(response == NULL){
-            exit_with_error("Client error!");
             close(server_socket);
+            exit(0);
         }
         
         // Process the response
