@@ -73,13 +73,14 @@ int main(){
             pthread_mutex_lock(&thread_slots[i]->lock);
             // Check if the thread slot is available
             if(thread_slots[i]->in_use == false){
+                // Send an acknowledgement response to the client to signal that they are connected
+                send_response_to_client(client_socket, RESPONSE_ACK, STATUS_ACK_OK, "");
+                // Signal the worker thread
                 slot_available = true;
                 thread_slots[i]->in_use = true;
                 thread_slots[i]->socketfd = client_socket;
                 pthread_cond_signal(&thread_slots[i]->cond);
                 pthread_mutex_unlock(&thread_slots[i]->lock);
-                // Send an acknowledgement response to the client to signal that they are connected
-                send_response_to_client(client_socket, RESPONSE_ACK, STATUS_ACK_OK, "");
                 break;
             }
             pthread_mutex_unlock(&thread_slots[i]->lock);

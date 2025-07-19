@@ -20,7 +20,7 @@ RECEIVE_RESPONSE = $(SRC_DIR)/receive_response.c
 
 # === APP SOURCES ===
 SERVER_SRC = $(SRC_DIR)/chat_server.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL) $(CLIENTS) $(REQUEST_HANDLER) $(CLIENT_HANDLER) $(SEND_RESPONSE)
-CLIENT_SRC = $(SRC_DIR)/chat_client.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL)
+CLIENT_SRC = $(SRC_DIR)/chat_client.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL) $(SEND_REQUEST) $(RECEIVE_RESPONSE)
 
 # === TEST SOURCES ===
 TEST_MESSAGE = $(TEST_DIR)/test_message.c
@@ -100,5 +100,6 @@ clean:
 server: $(SERVER_BIN)
 	@$(SERVER_BIN)
 
+# Usage: make client ARGS="your_argument"
 client: $(CLIENT_BIN)
-	@$(CLIENT_BIN)
+	@$(CLIENT_BIN) $(ARGS)

@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <errno.h>
+#include <string.h>
 
 void *thread_function(void *arg){
     ThreadSlot *thread_slot = (ThreadSlot *)arg;
@@ -31,12 +33,13 @@ void *thread_function(void *arg){
 
 void handle_client(int client_socket){
     bool leave = false; // Boolean variable to determine if the client wants to leave or not
-    while(leave){
+    while(!leave){
         int error;
         // Read the payload length from the client
         uint32_t payload_length = read_payload_len(client_socket);
         if(payload_length == UINT32_MAX){
             fprintf(stderr, "Reading request length failed!\n");
+            fprintf(stderr, "(errno = %d) : %s\n", errno, strerror(errno));
             fflush(stderr);
             send_error_to_client(client_socket, STATUS_ERR_SERVER_ERROR);
             continue;
@@ -102,6 +105,9 @@ void handle_client(int client_socket){
             else if(error == ERR_MEMORY) send_error_to_client(client_socket, STATUS_ERR_SERVER_ERROR);
             continue;
         }
+
+        // Print the payload(for testing)
+        printf("Request: %s\n", (char *)payload_buffer);
 
         // Handle the request of the client
         switch(request->type){
