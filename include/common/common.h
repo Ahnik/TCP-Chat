@@ -23,6 +23,9 @@
 // Server backlog
 #define SERVER_BACKLOG 10
 
+// Client prompts
+#define QUIT_PROMPT "/quit"
+
 // Function for handling errors
 // It displays the error encountered and then kills the process
 void exit_with_error(const char *fmt, ...);

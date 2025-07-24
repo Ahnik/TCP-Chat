@@ -45,23 +45,19 @@ int main(int argc, char **argv){
     Response *response = receive_response(server_socket);
     if(response == NULL){
         close(server_socket);
-        exit(0);
+        exit_with_error("No response from server!");
     }
     
     // If the response is an error response, exit 
     if(response->type == RESPONSE_ERR && response->status == STATUS_ERR_SERVER_FULL){
-        fprintf(stderr, "Server is full!\n");
-        fflush(stderr);
         free(response);
         close(server_socket);
-        exit(0);
+        exit_with_error("Server is full!");
     }   // The server response is invalid
     else if(response->type != RESPONSE_ACK || response->status != STATUS_ACK_OK){
-        fprintf(stderr, "Invalid response from server!\n");
-        fflush(stderr);
         free(response);
         close(server_socket);
-        exit(0);
+        exit_with_error("Invalid response from server!");
     }
     free(response);
     response = NULL;
@@ -77,8 +73,8 @@ int main(int argc, char **argv){
         // Enter the name
         printf("Enter your name: ");
         if(fgets(username, MAX_USERNAME_SIZE, stdin) == NULL){
-            exit_with_error("Input name error!");
             close(server_socket);
+            exit_with_error("Input name error!");
         }
 
         // Send JOIN request to the server
@@ -88,7 +84,7 @@ int main(int argc, char **argv){
         response = receive_response(server_socket);
         if(response == NULL){
             close(server_socket);
-            exit(0);
+            exit(1);
         }
         
         // Process the response
@@ -119,9 +115,9 @@ int main(int argc, char **argv){
     if(client_context == NULL)
         exit_with_error("Unable to setup client context!");
 
-    init_client_context(client_context, server_socket);
-    pthread_create(&client_context->input_thread, NULL, input_thread_function, NULL);
-    pthread_create(&client_context->receiver_thread, NULL, receiver_thread_function, NULL);
+    init_client_context(client_context, server_socket, username);
+    pthread_create(&client_context->input_thread, NULL, input_thread_function, (void *)client_context);
+    pthread_create(&client_context->receiver_thread, NULL, receiver_thread_function, (void *)client_context);
 
     pthread_join(client_context->input_thread, NULL);
     pthread_join(client_context->receiver_thread, NULL);
