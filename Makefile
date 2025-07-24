@@ -1,43 +1,46 @@
 # === CONFIG ===
 CC = gcc
-CFLAGS = -Wall -Wextra -Wpedantic -Iinclude -Itests/unity -pthread -fsanitize=thread -g
+CFLAGS = -Wall -Wextra -Wpedantic -Iinclude/common -Iinclude/client -Iinclude/server -Itests/unity -pthread -fsanitize=thread -g
 SRC_DIR = src
+CLIENT_SRC_DIR = $(SRC_DIR)/client
+SERVER_SRC_DIR = $(SRC_DIR)/server
+COMMON_SRC_DIR = $(SRC_DIR)/common
 TEST_DIR = tests
 BIN_DIR = bin
 UNITY_DIR = $(TEST_DIR)/unity
 
 # === CORE SOURCES ===
-COMMON = $(SRC_DIR)/common.c
-MESSAGE = $(SRC_DIR)/message.c
-NET = $(SRC_DIR)/net.c
-PROTOCOL = $(SRC_DIR)/protocol.c
-CLIENTS = $(SRC_DIR)/clients.c
-CLIENT_HANDLER = $(SRC_DIR)/client_handler.c 
-REQUEST_HANDLER = $(SRC_DIR)/request_handler.c 
-SEND_REQUEST = $(SRC_DIR)/send_request.c 
-SEND_RESPONSE = $(SRC_DIR)/send_response.c 
-RECEIVE_RESPONSE = $(SRC_DIR)/receive_response.c 
+COMMON 			 = $(COMMON_SRC_DIR)/common.c
+MESSAGE 		 = $(COMMON_SRC_DIR)/message.c
+NET 			 = $(COMMON_SRC_DIR)/net.c
+PROTOCOL 		 = $(COMMON_SRC_DIR)/protocol.c
+CLIENTS 		 = $(SERVER_SRC_DIR)/clients.c
+CLIENT_HANDLER   = $(SERVER_SRC_DIR)/client_handler.c
+REQUEST_HANDLER  = $(SERVER_SRC_DIR)/request_handler.c
+SEND_RESPONSE 	 = $(SERVER_SRC_DIR)/send_response.c
+SEND_REQUEST 	 = $(CLIENT_SRC_DIR)/send_request.c
+RECEIVE_RESPONSE = $(CLIENT_SRC_DIR)/receive_response.c
 
 # === APP SOURCES ===
-SERVER_SRC = $(SRC_DIR)/chat_server.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL) $(CLIENTS) $(REQUEST_HANDLER) $(CLIENT_HANDLER) $(SEND_RESPONSE)
-CLIENT_SRC = $(SRC_DIR)/chat_client.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL) $(SEND_REQUEST) $(RECEIVE_RESPONSE)
+SERVER_SRC = $(SERVER_SRC_DIR)/chat_server.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL) $(CLIENTS) $(REQUEST_HANDLER) $(CLIENT_HANDLER) $(SEND_RESPONSE)
+CLIENT_SRC = $(CLIENT_SRC_DIR)/chat_client.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL) $(SEND_REQUEST) $(RECEIVE_RESPONSE)
 
 # === TEST SOURCES ===
-TEST_MESSAGE = $(TEST_DIR)/test_message.c
-TEST_NET = $(TEST_DIR)/test_net.c
-TEST_PROTOCOL = $(TEST_DIR)/test_protocol.c
-TEST_CLIENTS = $(TEST_DIR)/test_clients.c
-TEST_REQUEST_HANDLER = $(TEST_DIR)/test_request_handler.c 
-UNITY_SRC = $(UNITY_DIR)/unity.c
+TEST_MESSAGE  		 = $(TEST_DIR)/test_message.c
+TEST_NET 	  		 = $(TEST_DIR)/test_net.c
+TEST_PROTOCOL 		 = $(TEST_DIR)/test_protocol.c
+TEST_CLIENTS 		 = $(TEST_DIR)/test_clients.c
+TEST_REQUEST_HANDLER = $(TEST_DIR)/test_request_handler.c
+UNITY_SRC 			 = $(UNITY_DIR)/unity.c
 
 # === BINARIES ===
-TEST_MESSAGE_BIN = $(BIN_DIR)/test_message
-TEST_NET_BIN = $(BIN_DIR)/test_net
-TEST_PROTOCOL_BIN = $(BIN_DIR)/test_protocol
-TEST_CLIENTS_BIN = $(BIN_DIR)/test_clients
-TEST_REQUEST_HANDLER_BIN = $(BIN_DIR)/test_request_handler 
-SERVER_BIN = $(BIN_DIR)/chat_server
-CLIENT_BIN = $(BIN_DIR)/chat_client
+TEST_MESSAGE_BIN 		 = $(BIN_DIR)/test_message
+TEST_NET_BIN 			 = $(BIN_DIR)/test_net
+TEST_PROTOCOL_BIN 		 = $(BIN_DIR)/test_protocol
+TEST_CLIENTS_BIN 		 = $(BIN_DIR)/test_clients
+TEST_REQUEST_HANDLER_BIN = $(BIN_DIR)/test_request_handler
+SERVER_BIN 				 = $(BIN_DIR)/chat_server
+CLIENT_BIN 				 = $(BIN_DIR)/chat_client
 
 # === TARGETS ===
 .PHONY: all clean test build run-server run-client test_message test_net test_protocol test_request_handler
@@ -58,7 +61,7 @@ $(TEST_NET_BIN): $(TEST_NET) $(NET) $(COMMON) $(UNITY_SRC) | bin_dir
 $(TEST_PROTOCOL_BIN): $(TEST_PROTOCOL) $(PROTOCOL) $(COMMON) $(UNITY_SRC) | bin_dir
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(TEST_CLIENTS_BIN): $(TEST_CLIENTS) $(CLIENTS) $(NET) $(COMMON) $(UNITY_SRC) | bin_dir 
+$(TEST_CLIENTS_BIN): $(TEST_CLIENTS) $(CLIENTS) $(NET) $(COMMON) $(UNITY_SRC) | bin_dir
 	$(CC) $(CFLAGS) $^ -o $@
 
 $(TEST_REQUEST_HANDLER_BIN): $(TEST_REQUEST_HANDLER) $(REQUEST_HANDLER) $(CLIENTS) $(MESSAGE) $(COMMON) $(NET) $(PROTOCOL) $(SEND_RESPONSE) $(UNITY_SRC) | bin_dir
