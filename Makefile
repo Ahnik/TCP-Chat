@@ -20,6 +20,9 @@ REQUEST_HANDLER  = $(SERVER_SRC_DIR)/request_handler.c
 SEND_RESPONSE 	 = $(SERVER_SRC_DIR)/send_response.c
 SEND_REQUEST 	 = $(CLIENT_SRC_DIR)/send_request.c
 RECEIVE_RESPONSE = $(CLIENT_SRC_DIR)/receive_response.c
+INPUT			 = $(CLIENT_SRC_DIR)/input.c
+RECEIVER 		 = $(CLIENT_SRC_DIR)/receiver.c
+CLIENT_CONTEXT	 = $(CLIENT_SRC_DIR)/client_context.c
 
 # === APP SOURCES ===
 SERVER_SRC = $(SERVER_SRC_DIR)/chat_server.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL) $(CLIENTS) $(REQUEST_HANDLER) $(CLIENT_HANDLER) $(SEND_RESPONSE)

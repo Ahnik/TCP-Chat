@@ -4,6 +4,9 @@
 #include "net.h"
 #include "send_request.h"
 #include "receive_response.h"
+#include "client_context.h"
+#include "input.h"
+#include "receiver.h"
 #include <sys/socket.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -111,6 +114,20 @@ int main(int argc, char **argv){
         }
     }
 
+    // Setup client context and spawn threads
+    ClientContext *client_context = (ClientContext *)malloc(sizeof(*client_context));
+    if(client_context == NULL)
+        exit_with_error("Unable to setup client context!");
+
+    init_client_context(client_context, server_socket);
+    pthread_create(&client_context->input_thread, NULL, input_thread_function, NULL);
+    pthread_create(&client_context->receiver_thread, NULL, receiver_thread_function, NULL);
+
+    pthread_join(client_context->input_thread, NULL);
+    pthread_join(client_context->receiver_thread, NULL);
+    
+    destroy_client_context(client_context);
+    free(client_context);
     close(server_socket);
     return 0;
 }
