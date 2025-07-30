@@ -48,13 +48,13 @@ void handle_client(int client_socket){
             Client *client;
             // If the client exists in the client list, remove them
             if((client = find_client_by_socket(client_socket)) != NULL){
-                if((error = remove_client(client_socket)) != ERR_OK)
-                    exit_with_error("Error with client list! Shutting down!");
-
                 // Broadcast the response to all the connected clients
                 char message[MAX_MESSAGE_SIZE];
                 snprintf(message, MAX_MESSAGE_SIZE, "--%s has disconnected--", client->username);
                 broadcast_response(RESPONSE_INFO, STATUS_INFO_CLIENT_DISCONNECTED, message);
+
+                if((error = remove_client(client_socket)) != ERR_OK)
+                    exit_with_error("Error with client list! Shutting down!");
             }
             leave = true;
             continue;

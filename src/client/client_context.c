@@ -6,7 +6,7 @@ void init_client_context(ClientContext *client_context, int socketfd, const char
     snprintf(client_context->username, MAX_USERNAME_SIZE, "%s", username);
     client_context->socketfd = socketfd;
     pthread_mutex_init(&client_context->lock, NULL);
-    pthread_mutex_init(&client_context->cond_var, NULL);
+    pthread_cond_init(&client_context->cond_var, NULL);
     client_context->running = true;
 }
 

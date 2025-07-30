@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 void *receiver_thread_function(void *arg){
     ClientContext *client_context = (ClientContext *)arg;

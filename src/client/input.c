@@ -28,32 +28,6 @@ void *input_thread_function(void *arg){
         pthread_mutex_lock(&client_context->lock);
         if(strncmp(input_buffer, QUIT_PROMPT, strlen(QUIT_PROMPT)) != 0){
             send_request(client_context->socketfd, REQUEST_MSG, client_context->username, input_buffer);
-
-            Response *response = receive_response(client_context->socketfd);
-            if(response == NULL){
-                close(client_context->socketfd);
-                pthread_mutex_unlock(&client_context->lock);
-                break;
-            }
-
-            if(response->type != RESPONSE_ACK || response->status != STATUS_ACK_OK || response->type != RESPONSE_INFO){
-                if(response->type == RESPONSE_ERR && response->status == STATUS_ERR_NOT_LOGGED_IN){
-                    fprintf(stderr, "Client is not logged into the server!\nShutting down client!\n");
-                    fflush(stderr);
-                    free(response);
-                    client_context->running = false;
-                    pthread_mutex_unlock(&client_context->lock);
-                    break;
-                }else{
-                    fprintf(stderr, "Invalid response from server!\nShutting down client!\n");
-                    fflush(stderr);
-                    free(response);
-                    client_context->running = false;
-                    pthread_mutex_unlock(&client_context->lock);
-                    break;
-                }
-            }
-            free(response);
         }else{
             send_request(client_context->socketfd, REQUEST_LEAVE, client_context->username, "");
             client_context->running = false;
