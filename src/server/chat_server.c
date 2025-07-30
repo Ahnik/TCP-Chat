@@ -36,10 +36,11 @@ int main(){
     if((server_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
         exit_with_error("Failed to create socket!");
 
-    // Make the socket reusable to avoid 'Bind failed' errors
+    // Set the reuse address socket option
     int opt = 1;
-    setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &opt, (socklen_t)sizeof(opt));
-    
+    if(setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &opt, (socklen_t)sizeof(opt)) < 0)
+        exit_with_error("Set socket options failed!");
+
     // Initialize the address struct
     struct sockaddr_in server_addr; /* struct sockaddr_in OR struct sockaddr */
     memset((void *)&server_addr, 0, sizeof(server_addr));
@@ -74,7 +75,10 @@ int main(){
         bool slot_available = false;
         // Once the client is accepted, the server will look for any available thread slot.
         for(int i=0; i<MAX_CLIENTS; i++){
-            pthread_mutex_lock(&thread_slots[i]->lock);
+            // Check if the mutex lock is acquired or not
+            if(pthread_mutex_trylock(&thread_slots[i]->lock) == EBUSY)
+                continue;
+
             // Check if the thread slot is available
             if(thread_slots[i]->in_use == false){
                 // Send an acknowledgement response to the client to signal that they are connected

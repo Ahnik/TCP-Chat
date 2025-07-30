@@ -21,7 +21,7 @@
 #define SERVER_PORT 4221
 
 // Server backlog
-#define SERVER_BACKLOG 10
+#define SERVER_BACKLOG MAX_CLIENTS
 
 // Client prompts
 #define QUIT_PROMPT "/quit"
