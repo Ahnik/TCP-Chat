@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include <pthread.h>
+#include <stdbool.h>
 
 typedef struct{
     char username[MAX_USERNAME_SIZE];
@@ -11,6 +12,7 @@ typedef struct{
     pthread_t receiver_thread;
     pthread_mutex_t lock;
     pthread_cond_t cond_var;
+    volatile bool running;
 } ClientContext;
 
 void init_client_context(ClientContext *client_context, int socketfd, const char *username);

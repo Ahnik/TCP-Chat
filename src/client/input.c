@@ -14,8 +14,7 @@
 
 void *input_thread_function(void *arg){
     ClientContext *client_context = (ClientContext *)arg;
-    bool quit = false;
-    while(!quit){
+    while(client_context->running){
         char input_buffer[MAX_MESSAGE_SIZE];
         if(fgets(input_buffer, MAX_MESSAGE_SIZE, stdin) == NULL){
             close(client_context->socketfd);
@@ -38,13 +37,13 @@ void *input_thread_function(void *arg){
 
             if(response->type != RESPONSE_ACK || response->status != STATUS_ACK_OK){
                 if(response->type == RESPONSE_ERR && response->status == STATUS_ERR_NOT_LOGGED_IN){
-                    fprintf(stderr, "Client is not logged into the server!\n");
+                    fprintf(stderr, "Client is not logged into the server!\nShutting down client!\n");
                     fflush(stderr);
                     free(response);
                     pthread_mutex_unlock(&client_context->lock);
                     break;
                 }else{
-                    fprintf(stderr, "Invalid response from server!\n");
+                    fprintf(stderr, "Invalid response from server!\nShutting down client!\n");
                     fflush(stderr);
                     free(response);
                     pthread_mutex_unlock(&client_context->lock);
@@ -53,7 +52,8 @@ void *input_thread_function(void *arg){
             }
             free(response);
         }else{
-            quit = true;
+            send_request(client_context->socketfd, REQUEST_LEAVE, client_context->username, "");
+            client_context->running = false;
         }
         pthread_mutex_unlock(&client_context->lock);
     }

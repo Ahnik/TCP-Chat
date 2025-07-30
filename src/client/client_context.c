@@ -7,6 +7,7 @@ void init_client_context(ClientContext *client_context, int socketfd, const char
     client_context->socketfd = socketfd;
     pthread_mutex_init(&client_context->lock, NULL);
     pthread_mutex_init(&client_context->cond_var, NULL);
+    client_context->running = true;
 }
 
 void destroy_client_context(ClientContext *client_context){

@@ -96,13 +96,13 @@ int main(int argc, char **argv){
             free(response);
             response = NULL;
         }else if(response->type == RESPONSE_ERR && response->status == STATUS_ERR_SERVER_ERROR){
-            fprintf(stderr, "Internal server error!\n");
+            fprintf(stderr, "Internal server error!\nShutting down client!\n");
             fflush(stderr);
             free(response);
             close(server_socket);
             exit(0);
         }else{
-            fprintf(stderr, "Invalid response from server!\n");
+            fprintf(stderr, "Invalid response from server!\nShutting down client!\n");
             fflush(stderr);
             free(response);
             close(server_socket);
