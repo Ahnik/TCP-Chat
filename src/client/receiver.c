@@ -4,6 +4,7 @@
 #include "receive_response.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 void *receiver_thread_function(void *arg){
     ClientContext *client_context = (ClientContext *)arg;
@@ -11,7 +12,8 @@ void *receiver_thread_function(void *arg){
     printf("\n> ");
     fflush(stdout);
 
-    while(client_context->running){
+    bool quit = false;
+    while(!quit){
         Response *response = receive_response(client_context->socketfd);
         if(response == NULL){
             close(client_context->socketfd);
@@ -26,6 +28,9 @@ void *receiver_thread_function(void *arg){
             printf("\n> ");
             fflush(stdout);
         }
+
+        if(client_context->running == false)
+            quit = true;
         pthread_mutex_unlock(&client_context->lock);
         free(response);
     }

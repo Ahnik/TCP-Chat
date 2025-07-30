@@ -76,6 +76,7 @@ int main(int argc, char **argv){
             close(server_socket);
             exit_with_error("Input name error!");
         }
+        username[strcspn(username, "\n")] = '\0';
 
         // Send JOIN request to the server
         send_request(server_socket, REQUEST_JOIN, username, "");
