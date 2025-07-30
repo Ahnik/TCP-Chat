@@ -14,8 +14,11 @@
 
 void *input_thread_function(void *arg){
     ClientContext *client_context = (ClientContext *)arg;
-    bool quit = false;
-    while(!quit){
+
+    pthread_mutex_lock(&client_context->lock);
+    while(client_context->running){
+        pthread_mutex_unlock(&client_context->lock);
+        
         char input_buffer[MAX_MESSAGE_SIZE];
         if(fgets(input_buffer, MAX_MESSAGE_SIZE, stdin) == NULL){
             close(client_context->socketfd);
@@ -31,9 +34,8 @@ void *input_thread_function(void *arg){
         }else{
             send_request(client_context->socketfd, REQUEST_LEAVE, client_context->username, "");
             client_context->running = false;
-            quit = true;
         }
-        pthread_mutex_unlock(&client_context->lock);
     }
+    pthread_mutex_unlock(&client_context->lock);
     return NULL;
 }

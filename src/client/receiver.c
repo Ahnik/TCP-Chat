@@ -13,8 +13,10 @@ void *receiver_thread_function(void *arg){
     printf("\n> ");
     fflush(stdout);
 
-    bool quit = false;
-    while(!quit){
+    pthread_mutex_lock(&client_context->lock);
+    while(client_context->running){
+        pthread_mutex_unlock(&client_context->lock);
+
         Response *response = receive_response(client_context->socketfd);
         if(response == NULL){
             close(client_context->socketfd);
@@ -29,11 +31,20 @@ void *receiver_thread_function(void *arg){
             printf("\n> ");
             fflush(stdout);
         }
-
-        if(client_context->running == false)
-            quit = true;
-        pthread_mutex_unlock(&client_context->lock);
+        else if(response->type == RESPONSE_ERR){
+            printf("\033[A\r\033[K\033[A");
+            switch(response->status){
+                case STATUS_ERR_NOT_LOGGED_IN:
+                    printf("You are not logged in!\n");
+                    break;
+                default:
+                    printf("Server error occurred!\n");
+            }
+            printf("Shutting down client! Press Enter to exit!\n");
+            client_context->running = false;
+        }
         free(response);
     }
+    pthread_mutex_unlock(&client_context->lock);
     return NULL;
 }

@@ -35,6 +35,10 @@ int main(){
     int server_socket;
     if((server_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
         exit_with_error("Failed to create socket!");
+
+    // Make the socket reusable to avoid 'Bind failed' errors
+    int opt = 1;
+    setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &opt, (socklen_t)sizeof(opt));
     
     // Initialize the address struct
     struct sockaddr_in server_addr; /* struct sockaddr_in OR struct sockaddr */
