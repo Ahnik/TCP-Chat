@@ -8,20 +8,28 @@
 #include <string.h>
 #include <pthread.h>
 #include <stdbool.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
 
 void *input_thread_function(void *arg){
     ClientContext *client_context = (ClientContext *)arg;
 
+    bool quit = false;
     pthread_mutex_lock(&client_context->lock);
-    while(client_context->running){
+    if(!client_context->running) quit = true;
+    pthread_mutex_unlock(&client_context->lock);
+
+    while(!quit){
+        pthread_mutex_lock(&client_context->lock);
+        if(!client_context->running){
+            quit = true;
+            pthread_mutex_unlock(&client_context->lock);
+            continue;
+        }
         pthread_mutex_unlock(&client_context->lock);
         
         char input_buffer[MAX_MESSAGE_SIZE];
         if(fgets(input_buffer, MAX_MESSAGE_SIZE, stdin) == NULL){
-            close(client_context->socketfd);
             fprintf(stderr, "Client input error!\n");
             fprintf(stderr, "(errno = %d) : %s\n", errno, strerror(errno));
             break;
@@ -35,7 +43,7 @@ void *input_thread_function(void *arg){
             send_request(client_context->socketfd, REQUEST_LEAVE, client_context->username, "");
             client_context->running = false;
         }
+        pthread_mutex_unlock(&client_context->lock);
     }
-    pthread_mutex_unlock(&client_context->lock);
     return NULL;
 }

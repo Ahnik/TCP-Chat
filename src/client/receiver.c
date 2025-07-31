@@ -5,27 +5,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <unistd.h>
 
 void *receiver_thread_function(void *arg){
     ClientContext *client_context = (ClientContext *)arg;
     printf("\033[H\033[J");
-    printf("\n> ");
     fflush(stdout);
 
+    bool quit = false;
     pthread_mutex_lock(&client_context->lock);
-    while(client_context->running){
+    if(!client_context->running) quit = true;
+    pthread_mutex_unlock(&client_context->lock);
+    
+    while(!quit){
+        pthread_mutex_lock(&client_context->lock);
+        if(!client_context->running){
+            quit = true;
+            pthread_mutex_unlock(&client_context->lock);
+            continue;
+        }
         pthread_mutex_unlock(&client_context->lock);
 
         Response *response = receive_response(client_context->socketfd);
         if(response == NULL){
-            close(client_context->socketfd);
+            printf("Shutting down the client! Press Enter to exit!\n");
+            pthread_mutex_lock(&client_context->lock);
+            client_context->running = false;
+            pthread_mutex_unlock(&client_context->lock);
             break;
         }
 
         pthread_mutex_lock(&client_context->lock);
         if(response->type == RESPONSE_INFO){
-            // Move up, place the cursor at the beginning of the line and clear the line and up again
             printf("\033[A\r\033[K\033[A");
             printf("%s\n", response->message);
             printf("\n> ");
@@ -44,7 +54,7 @@ void *receiver_thread_function(void *arg){
             client_context->running = false;
         }
         free(response);
+        pthread_mutex_unlock(&client_context->lock);
     }
-    pthread_mutex_unlock(&client_context->lock);
     return NULL;
 }
