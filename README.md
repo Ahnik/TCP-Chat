@@ -5,6 +5,33 @@ There are two main programs:<br>
 2. client.c - connects to the server and sends/receives messages<br>
 </p>
 
+<h2>Running Locally</h2>
+<p>
+After cloning this repository, migrate to the TCP-Chat directory. Then run the following commands to set up chat server and chat
+client and running tests locally: <br>
+</p>
+
+<h3>Setting Up Chat Server</h3>
+<p>
+```console
+  make server
+  ```
+</p>
+
+<h3>Setting Up Chat Client</h3>
+<p>
+```console
+  make client ARGS=<IP address of the server>
+  ```
+</p>
+
+<h3>Running Tests Locally</h3>
+<p>
+```console
+  make test
+  ```
+</p>
+
 <h2>Requirements</h2>
 <p>
 1. Create a chat server and client using socket().<br>
