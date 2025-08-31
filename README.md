@@ -24,6 +24,10 @@ client and running tests locally:
   make test
   ```
 
+### Note
+If you face any problems with compiling and running the code with the ThreadSanitizer, try removing the '-fsanitize=thread' flag
+when compiling.
+
 <h2>Requirements</h2>
 <p>
 1. Create a chat server and client using socket().<br>
