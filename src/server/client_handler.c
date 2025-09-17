@@ -95,7 +95,7 @@ void handle_client(int client_socket){
 
         // Decode the request 
         if((error = decode_request(request, (char *)payload_buffer)) != ERR_OK){
-            fprintf(stderr, "Decoding reqeust error!\n");
+            fprintf(stderr, "Decoding request error!\n");
             fprintf(stderr, "%s", error_to_string(error));
             fprintf(stderr, "\n");
             fflush(stderr);

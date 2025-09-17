@@ -1,6 +1,6 @@
 # === CONFIG ===
 CC = gcc
-CFLAGS = -Wall -Wextra -Wpedantic -Iinclude/common -Iinclude/client -Iinclude/server -Itests/unity -pthread -fsanitize=thread -g
+CFLAGS = -Wall -Wextra -Wpedantic -Iinclude/common -Iinclude/client -Iinclude/server -Itests/unity -pthread
 SRC_DIR = src
 CLIENT_SRC_DIR = $(SRC_DIR)/client
 SERVER_SRC_DIR = $(SRC_DIR)/server
