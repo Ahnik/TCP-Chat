@@ -1,4 +1,4 @@
-# === CONFIG ===
+# Config
 CC = gcc
 CFLAGS = -Wall -Wextra -Wpedantic -Iinclude/common -Iinclude/client -Iinclude/server -Itests/unity -pthread
 SRC_DIR = src
@@ -9,7 +9,7 @@ TEST_DIR = tests
 BIN_DIR = bin
 UNITY_DIR = $(TEST_DIR)/unity
 
-# === CORE SOURCES ===
+# Core source files
 COMMON 			 = $(COMMON_SRC_DIR)/common.c
 MESSAGE 		 = $(COMMON_SRC_DIR)/message.c
 NET 			 = $(COMMON_SRC_DIR)/net.c
@@ -24,11 +24,11 @@ INPUT			 = $(CLIENT_SRC_DIR)/input.c
 RECEIVER 		 = $(CLIENT_SRC_DIR)/receiver.c
 CLIENT_CONTEXT	 = $(CLIENT_SRC_DIR)/client_context.c
 
-# === APP SOURCES ===
+# Main source files
 SERVER_SRC = $(SERVER_SRC_DIR)/chat_server.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL) $(CLIENTS) $(REQUEST_HANDLER) $(CLIENT_HANDLER) $(SEND_RESPONSE)
 CLIENT_SRC = $(CLIENT_SRC_DIR)/chat_client.c $(COMMON) $(MESSAGE) $(NET) $(PROTOCOL) $(SEND_REQUEST) $(RECEIVE_RESPONSE) $(CLIENT_CONTEXT) $(INPUT) $(RECEIVER)
 
-# === TEST SOURCES ===
+# Test source files
 TEST_MESSAGE  		 = $(TEST_DIR)/test_message.c
 TEST_NET 	  		 = $(TEST_DIR)/test_net.c
 TEST_PROTOCOL 		 = $(TEST_DIR)/test_protocol.c
@@ -36,7 +36,7 @@ TEST_CLIENTS 		 = $(TEST_DIR)/test_clients.c
 TEST_REQUEST_HANDLER = $(TEST_DIR)/test_request_handler.c
 UNITY_SRC 			 = $(UNITY_DIR)/unity.c
 
-# === BINARIES ===
+# Binary files
 TEST_MESSAGE_BIN 		 = $(BIN_DIR)/test_message
 TEST_NET_BIN 			 = $(BIN_DIR)/test_net
 TEST_PROTOCOL_BIN 		 = $(BIN_DIR)/test_protocol
@@ -45,32 +45,32 @@ TEST_REQUEST_HANDLER_BIN = $(BIN_DIR)/test_request_handler
 SERVER_BIN 				 = $(BIN_DIR)/chat_server
 CLIENT_BIN 				 = $(BIN_DIR)/chat_client
 
-# === TARGETS ===
+# Targets
 .PHONY: all clean test build run-server run-client test_message test_net test_protocol test_request_handler
 
 all: test build
 
-# === Internal: Ensure bin directory exists ===
-bin_dir:
+# At the beginning to ensure that the bin directory exists
+start:
 	mkdir -p $(BIN_DIR)
 
-# === Test binaries ===
-$(TEST_MESSAGE_BIN): $(TEST_MESSAGE) $(MESSAGE) $(COMMON) $(PROTOCOL) $(UNITY_SRC) | bin_dir
+# Test binaries
+$(TEST_MESSAGE_BIN): $(TEST_MESSAGE) $(MESSAGE) $(COMMON) $(PROTOCOL) $(UNITY_SRC) | start
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(TEST_NET_BIN): $(TEST_NET) $(NET) $(COMMON) $(UNITY_SRC) | bin_dir
+$(TEST_NET_BIN): $(TEST_NET) $(NET) $(COMMON) $(UNITY_SRC) | start
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(TEST_PROTOCOL_BIN): $(TEST_PROTOCOL) $(PROTOCOL) $(COMMON) $(UNITY_SRC) | bin_dir
+$(TEST_PROTOCOL_BIN): $(TEST_PROTOCOL) $(PROTOCOL) $(COMMON) $(UNITY_SRC) | start
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(TEST_CLIENTS_BIN): $(TEST_CLIENTS) $(CLIENTS) $(NET) $(COMMON) $(UNITY_SRC) | bin_dir
+$(TEST_CLIENTS_BIN): $(TEST_CLIENTS) $(CLIENTS) $(NET) $(COMMON) $(UNITY_SRC) | start
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(TEST_REQUEST_HANDLER_BIN): $(TEST_REQUEST_HANDLER) $(REQUEST_HANDLER) $(CLIENTS) $(MESSAGE) $(COMMON) $(NET) $(PROTOCOL) $(SEND_RESPONSE) $(UNITY_SRC) | bin_dir
+$(TEST_REQUEST_HANDLER_BIN): $(TEST_REQUEST_HANDLER) $(REQUEST_HANDLER) $(CLIENTS) $(MESSAGE) $(COMMON) $(NET) $(PROTOCOL) $(SEND_RESPONSE) $(UNITY_SRC) | start
 	$(CC) $(CFLAGS) $^ -o $@
 
-# === Individual test targets ===
+# Individual test targets
 test_message: $(TEST_MESSAGE_BIN)
 	@$(TEST_MESSAGE_BIN)
 
@@ -86,26 +86,27 @@ test_clients: $(TEST_CLIENTS_BIN)
 test_request_handler: $(TEST_REQUEST_HANDLER_BIN)
 	@$(TEST_REQUEST_HANDLER_BIN)
 
-# === Run all tests ===
+# For running all the tests
 test: test_message test_net test_protocol test_clients test_request_handler
 
-# === Build only app binaries ===
-$(SERVER_BIN): $(SERVER_SRC) | bin_dir
+# For building server and client binaries
+$(SERVER_BIN): $(SERVER_SRC) | start
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(CLIENT_BIN): $(CLIENT_SRC) | bin_dir
+$(CLIENT_BIN): $(CLIENT_SRC) | start
 	$(CC) $(CFLAGS) $^ -o $@
 
 build: $(SERVER_BIN) $(CLIENT_BIN)
 
-# === Clean binaries ===
+# For cleaning all binaries
 clean:
 	rm -rf $(BIN_DIR)
 
-# === Optional: run the server and client ===
+# For running the server
 server: $(SERVER_BIN)
 	@$(SERVER_BIN)
 
+# For running the client
 # Usage: make client ARGS="your_argument"
 client: $(CLIENT_BIN)
 	@$(CLIENT_BIN) $(ARGS)
