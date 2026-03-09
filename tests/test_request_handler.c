@@ -51,7 +51,7 @@ void test_handle_name_request(){
         TEST_ASSERT_EQUAL_STRING(name, client->username);
 
         char response_buffer[MAX_PAYLOAD_SIZE];
-        bzero(response_buffer, MAX_PAYLOAD_SIZE);
+        memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
 
         uint32_t length = read_payload_len(socket_pairs[i][1]);
         TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen("ACK|NAME_SET")), length);
@@ -65,8 +65,8 @@ void test_handle_name_request(){
         TEST_ASSERT_EQUAL(STATUS_ACK_NAME_SET, response->status);
 
         for(int j=0; j<MAX_CLIENTS; j++){
-            bzero(response, sizeof(*response));
-            bzero(response_buffer, MAX_PAYLOAD_SIZE);
+            memset(response, 0, sizeof(*response));
+            memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
 
             char payload[MAX_PAYLOAD_SIZE];
             snprintf(payload, MAX_PAYLOAD_SIZE, "INFO|NAME_CHANGED|--%s has changed their name to %s--", prev_name, name);
@@ -111,7 +111,7 @@ void test_handle_msg_request(){
         handle_msg_request(socket_pairs[i][0], request);
 
         char response_buffer[MAX_PAYLOAD_SIZE];
-        bzero(response_buffer, MAX_PAYLOAD_SIZE);
+        memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
 
         uint32_t length = read_payload_len(socket_pairs[i][1]);
         TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen("ACK|OK")), length);
@@ -125,8 +125,8 @@ void test_handle_msg_request(){
         TEST_ASSERT_EQUAL(STATUS_ACK_OK, response->status);
 
         for(int j=0; j<MAX_CLIENTS; j++){
-            bzero(response, sizeof(*response));
-            bzero(response_buffer, MAX_PAYLOAD_SIZE);
+            memset(response, 0, sizeof(*response));
+            memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
 
             char payload[MAX_PAYLOAD_SIZE];
             snprintf(payload, MAX_PAYLOAD_SIZE, "INFO|MESSAGE|%s: %s", client->username, msg);
@@ -162,7 +162,7 @@ void test_handle_join_request(){
         handle_join_request(socket_pairs[i][0], request);
 
         char response_buffer[MAX_PAYLOAD_SIZE];
-        bzero(response_buffer, MAX_PAYLOAD_SIZE);
+        memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
 
         uint32_t length = read_payload_len(socket_pairs[i][1]);
         TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen("ACK|JOINED")), length);
@@ -179,8 +179,8 @@ void test_handle_join_request(){
         TEST_ASSERT_NOT_NULL(find_client_by_socket(socket_pairs[i][0]));
 
         for(int j=0; j<=i; j++){
-            bzero(response_buffer, MAX_PAYLOAD_SIZE);
-            bzero(response, sizeof(*response));
+            memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
+            memset(response, 0, sizeof(*response));
 
             char payload[MAX_PAYLOAD_SIZE];
             snprintf(payload, MAX_PAYLOAD_SIZE, "INFO|USER_JOINED|--%s has joined--", name);
@@ -220,7 +220,7 @@ void test_handle_leave_request(){
         handle_leave_request(socket_pairs[i][0], request);
 
         char response_buffer[MAX_PAYLOAD_SIZE];
-        bzero(response_buffer, MAX_PAYLOAD_SIZE);
+        memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
 
         uint32_t length = read_payload_len(socket_pairs[i][1]);
         TEST_ASSERT_EQUAL_UINT32((uint32_t)(strlen("ACK|QUIT")), length);
@@ -237,8 +237,8 @@ void test_handle_leave_request(){
         TEST_ASSERT_NULL(find_client_by_socket(socket_pairs[i][0]));
 
         for(int j=i+1; j<MAX_CLIENTS; j++){
-            bzero(response_buffer, MAX_PAYLOAD_SIZE);
-            bzero(response, sizeof(*response));
+            memset(response_buffer, 0, MAX_PAYLOAD_SIZE);
+            memset(response, 0, sizeof(*response));
 
             char payload[MAX_PAYLOAD_SIZE];
             snprintf(payload, MAX_PAYLOAD_SIZE, "INFO|USER_LEFT|--%s has left--", name);
