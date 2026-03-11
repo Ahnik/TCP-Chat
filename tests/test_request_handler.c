@@ -9,7 +9,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <strings.h>
 #include <string.h>
 
 // Unity Test Setup/Teardown functions
