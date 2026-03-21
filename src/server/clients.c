@@ -49,7 +49,7 @@ int remove_client(int socketfd){
         if(client->socketfd == socketfd){
             err_code = ERR_OK;
             if(client->socketfd == client_list_head->socketfd) client_list_head = client_list_head->next;
-            else if(client->socketfd == client_list_tail->socketfd) client_list_tail = prev_client;
+            if(client->socketfd == client_list_tail->socketfd) client_list_tail = prev_client;
             if(prev_client) prev_client->next = client->next;
             free(client);
             break;
