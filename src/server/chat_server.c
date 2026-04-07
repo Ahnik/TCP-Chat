@@ -107,6 +107,7 @@ int main(){
 
         if(!slot_available){
             // If no thread slot is available, send error code to the client that the chat server is full
+            printf("Client disconnected as server is full!\n");
             send_error_to_client(client_socket, STATUS_ERR_SERVER_FULL);
             close(client_socket);
         }
