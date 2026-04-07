@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE
+
 #include "client_handler.h"
 #include "request_handler.h"
 #include "send_response.h"
@@ -11,11 +13,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <signal.h>
  
 // Declaring the pool of thread slots to handle the clients
 static ThreadSlot *thread_slots[MAX_CLIENTS];
 
 int main(){
+    // Ignore the SIGPIPE interrupt so that the server process doesn't get terminated due to a broken pipe
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = SIG_IGN;
+    sa.sa_flags = 0;
+
+    sigaction(SIGPIPE, &sa, NULL);
+
     // Spawning the threads
     for(int i=0; i<MAX_CLIENTS; i++){
         // Allocate memory for the thread slots
