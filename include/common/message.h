@@ -27,13 +27,13 @@ typedef struct{
 // Function encodes the request according to the protocol into the given buffer
 int encode_request(uint8_t **buffer, size_t buffer_capacity, uint32_t length, const Request *request);
 
-// Function decodes the request the payload to fill up the request struct
+// Function decodes the request from the payload and fills up the request struct
 int decode_request(Request *request, const char *payload);
 
 // Function encodes the response according to the protocol into the given buffer
 int encode_response(uint8_t **buffer, size_t buffer_capacity, uint32_t length, const Response *response);
 
-// Function decodes the response the payload to fill up the response struct
+// Function decodes the response from the payload and fills up the response struct
 int decode_response(Response *response, const char *payload);
 
 // Function to return the length of a request

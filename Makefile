@@ -98,10 +98,6 @@ $(CLIENT_BIN): $(CLIENT_SRC) | start
 
 build: $(SERVER_BIN) $(CLIENT_BIN)
 
-# For cleaning all binaries
-clean:
-	rm -rf $(BIN_DIR)
-
 # For running the server
 server: $(SERVER_BIN)
 	@$(SERVER_BIN)

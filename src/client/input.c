@@ -37,7 +37,7 @@ void *input_thread_function(void *arg){
         input_buffer[strcspn(input_buffer, "\n")] = '\0';
 
         pthread_mutex_lock(&client_context->lock);
-        if(strncmp(input_buffer, QUIT_PROMPT, strlen(QUIT_PROMPT)) != 0){
+        if(strncmp(input_buffer, QUIT_PROMPT, sizeof(QUIT_PROMPT)) != 0){
             send_request(client_context->socketfd, REQUEST_MSG, client_context->username, input_buffer);
         }else{
             send_request(client_context->socketfd, REQUEST_LEAVE, client_context->username, "");

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <stdio.h>
 
 // Declaration of the head of the client list
 static Client *client_list_head = NULL;
@@ -23,7 +24,7 @@ int add_client(int socketfd, const char *username){
     if(!client) return ERR_MEMORY;
     client->next = NULL;
     client->socketfd = socketfd;
-    strcpy(client->username, username);
+    snprintf(client->username, MAX_USERNAME_SIZE, "%s", username);
 
     if(client_list_tail){
         client_list_tail->next = client;
@@ -81,7 +82,7 @@ Client *find_client_by_name(const char *username){
     Client *client = client_list_head;
 
     while(client){
-        if(strcmp(client->username, username) == 0) break;
+        if(strncmp(client->username, username, MAX_USERNAME_SIZE) == 0) break;
         client = client->next;
     }
 
